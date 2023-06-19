@@ -15,10 +15,6 @@ let package = Package(
         .library(
             name: "RevoltKitCore",
             targets: ["RevoltKitCore"]),
-        .executable(
-            name: "Test",
-            targets: ["Test"]
-        )
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
@@ -32,9 +28,5 @@ let package = Package(
             ]),
         .target(
             name: "RevoltKitCore"),
-        .executableTarget(
-            name: "Test",
-            dependencies: ["RevoltKit"]
-        )
     ]
 )
