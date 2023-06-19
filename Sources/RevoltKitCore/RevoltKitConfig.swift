@@ -14,7 +14,7 @@ public struct RevoltKitConfig {
     
     public let restBase: URL
     
-    public var version: Int = 1
+    public var version: Int
     
     public var gateway: String {
         "wss://ws.revolt.chat?version=\(version)&format=json"
@@ -26,7 +26,7 @@ public struct RevoltKitConfig {
     ) {
         self.cdnURL = "https://autumn.revolt.chat/"
         self.baseURL = URL(string: "https://\(baseURL)/")!
-        self.version = 1
+        self.version = _version
         
         self.restBase = self.baseURL.appendingPathComponent("api")
         
