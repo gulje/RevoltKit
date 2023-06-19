@@ -49,6 +49,8 @@ public extension RevoltREST {
     /// Does not work with bot account.
     ///
     /// `GET /users/{user.id}/mutual`
+    ///
+    /// - Parameter user: ID of user
     func getMutualWith(user: String) async throws -> GetMutualWithResponse {
         return try await getReq(path: "users/\(user)/mutual")
     }

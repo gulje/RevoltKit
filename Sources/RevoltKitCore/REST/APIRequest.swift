@@ -21,6 +21,7 @@ public extension RevoltREST {
         case patch = "PATCH"
     }
     
+    /// Low level method for Revolt API requests
     func makeRequest(
         path: String,
         query: [URLQueryItem] = [],
@@ -62,6 +63,7 @@ public extension RevoltREST {
         return data
     }
     
+    /// Make a `GET` request to the Revolt REST API
     func getReq<T: Decodable>(
         path: String,
         query: [URLQueryItem] = []
@@ -72,5 +74,65 @@ public extension RevoltREST {
         } catch {
             throw RequestError.jsonDecodingError(error: error)
         }
+    }
+    
+    /// Make a `POST` request to the Revolt REST API
+    func postReq<D: Decodable, B: Encodable>(
+        path: String,
+        body: B? = nil,
+        attachments: [URL] = []
+    ) async throws -> D {
+        let payload = body != nil ? try RevoltREST.encoder.encode(body) : nil
+        
+        let respData = try await makeRequest(
+            path: path,
+            attachments: attachments,
+            body: payload,
+            method: .post
+        )
+        
+        do {
+            return try RevoltREST.decoder.decode(D.self, from: respData)
+        } catch {
+            throw RequestError.jsonDecodingError(error: error)
+        }
+    }
+    
+    /// Make a `PUT` request to the Revolt REST API
+    func putReq<B: Encodable, Response: Decodable>(
+        path: String,
+        body: B
+    ) async throws -> Response {
+        let payload = try RevoltREST.encoder.encode(body)
+        let data = try await makeRequest(
+            path: path,
+            body: payload,
+            method: .put
+        )
+        
+        do {
+            return try RevoltREST.decoder.decode(Response.self, from: data)
+        } catch {
+            throw RequestError.jsonDecodingError(error: error)
+        }
+    }
+    
+    /// Make a `DELETE` request to the Revolt REST API
+    func deleteReq(path: String) async throws {
+        _ = try await makeRequest(path: path, method: .delete)
+    }
+    
+    /// Make a `PATCH` request to the Revolt REST API
+    func patchReq<B: Encodable>(
+        path: String,
+        body: B
+    ) async throws {
+        let payload: Data?
+        payload = try? RevoltREST.encoder.encode(body)
+        _ = try await makeRequest(
+            path: path,
+            body: payload,
+            method: .patch
+        )
     }
 }
