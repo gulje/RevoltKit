@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Logging
 
 public class RevoltREST {
-    static let log = Logger(label: "RevoltREST", level: nil)
+    static let log = Logger(label: "RevoltREST")
     
     static let session: URLSession = {
         let configuration = URLSessionConfiguration.default
