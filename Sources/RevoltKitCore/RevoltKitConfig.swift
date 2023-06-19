@@ -22,11 +22,11 @@ public struct RevoltKitConfig {
     
     public init(
         baseURL: String = "revolt.chat",
-        _version: Int = 1
+        version: Int = 1
     ) {
         self.cdnURL = "https://autumn.revolt.chat/"
         self.baseURL = URL(string: "https://\(baseURL)/")!
-        self.version = _version
+        self.version = version
         
         self.restBase = self.baseURL.appendingPathComponent("api")
         

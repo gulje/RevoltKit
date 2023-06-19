@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public extension RevoltREST {
     func getCurrentUser() async throws -> User {
         return try await getReq(path: "users/@me")

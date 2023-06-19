@@ -38,6 +38,14 @@ public struct Status: Codable {
     public let presence: Presence?
 }
 
+public struct Relations: Codable {
+    private var _id: String
+    public var id: String {
+        set {}
+        get { return _id }
+    }
+}
+
 public struct IsBot: Codable {
     public let owner: String
 }
