@@ -16,7 +16,7 @@
 ## Swift Package Manager
 - Add the following code to the `dependencies` array of your `Package.swift` file:
 ```swift
-.package(url: "https://github.com/SwiftcordApp/DiscordKit", branch: "main")
+.package(url: "https://github.com/gulje/RevoltKit", branch: "main")
 ```
 
 # Special Thanks
