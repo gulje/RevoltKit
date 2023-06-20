@@ -118,25 +118,27 @@ public extension RevoltREST {
     
     // DIRECT MESSAGING
     
-    // TODO: Implement direct message handling
     /// Fetch Direct Message Channels
     ///
     /// This fetches your direct messages, including any DM and group DM conversations.
     ///
     /// `GET /users/dms`
-    func getDirectMessages() async throws {
-        throw RevoltKitErrors.notImplemented("Not implemented yet")
+    func getDirectMessages() async throws -> [Channel] {
+        return try await getReq(
+            path: "users/dms"
+        )
     }
     
-    // TODO: Implement direct message handling
     /// Open Direct Message
     ///
     /// Open a DM with another user.
     /// If the target is oneself, a saved messages channel is returned.
     ///
     /// `GET /users/{target}/dm`
-    func openDirectMessage() async throws {
-        throw RevoltKitErrors.notImplemented("Not implemented yet")
+    func openDirectMessage(_ target: String) async throws -> Channel {
+        return try await getReq(
+            path: "users/\(target)/dm"
+        )
     }
     
     // RELATIONSHIPS
