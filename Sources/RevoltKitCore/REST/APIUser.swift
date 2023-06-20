@@ -40,6 +40,10 @@ public struct ChangeUsernamePayload: Codable {
     public let password: String
 }
 
+public struct SendFriendRequestPayload: Codable {
+    public let username: String
+}
+
 public extension RevoltREST {
     // USER INFORMATION
     
@@ -86,7 +90,15 @@ public extension RevoltREST {
     ) async throws -> User {
         return try await editUser(
             target: target,
-            body: EditUserPayload(display_name: display_name, avatar: avatar, status: status, profile: profile, badges: badges, flags: flags, remove: remove)
+            body: EditUserPayload(
+                display_name: display_name,
+                avatar: avatar,
+                status: status,
+                profile: profile,
+                badges: badges,
+                flags: flags,
+                remove: remove
+            )
         )
     }
     
@@ -214,6 +226,33 @@ public extension RevoltREST {
     func blockUser(target: String) async throws -> User {
         return try await putReq(
             path: "users/\(target)/block"
+        )
+    }
+    
+    /// Unblock User
+    ///
+    /// Unblock another user by their id.
+    ///
+    /// `DELETE /users/{target}/block`
+    ///
+    /// - Parameter target: ID of user
+    func unblockUser(target: String) async throws {
+        return try await deleteReq(
+            path: "users/\(target)/block"
+        )
+    }
+    
+    /// Send Friend Request
+    ///
+    /// Send a friend request to another user.
+    ///
+    /// `DELETE /users/{target}/block`
+    ///
+    /// - Parameter target: Username and discriminator combo separated by #
+    func sendFriendRequest(target: String) async throws -> User {
+        return try await postReq(
+            path: "users/friend",
+            body: SendFriendRequestPayload(username: target)
         )
     }
 }
