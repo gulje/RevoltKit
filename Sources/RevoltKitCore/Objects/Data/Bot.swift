@@ -49,5 +49,5 @@ public struct Bot: Identifiable, Codable, Equatable {
     public let privacy_policy_url: String?
     
     /// Bot flags
-    public let flags: Int32?
+    public let flags: UInt32?
 }

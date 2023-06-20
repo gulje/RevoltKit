@@ -51,7 +51,7 @@ public struct IsBot: Codable {
     public let owner: String
 }
 
-public class User: Equatable, Codable {
+public struct User: Equatable, Codable {
     private enum CodingKeys: String, CodingKey {
         case id = "_id"
         case username
@@ -88,7 +88,7 @@ public class User: Equatable, Codable {
     public let avatar: File?
     
     /// Bitfield of user badges
-    public let badges: Int32?
+    public let badges: UInt32?
     
     /// User's active status
     public let status: Status?
@@ -97,7 +97,7 @@ public class User: Equatable, Codable {
     public let profile: Profile?
     
     /// User flags
-    public let flags: Int32?
+    public let flags: UInt32?
     
     /// Whether this user is privileged
     public let privileged: Bool?
