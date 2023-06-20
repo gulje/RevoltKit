@@ -24,8 +24,9 @@ let package = Package(
             name: "RevoltKit",
             dependencies: [
                 .target(name: "RevoltKitCore"),
-                .product(name: "Logging", package: "swift-log")
-            ]),
+                .product(name: "Logging", package: "swift-log"),
+            ]
+        ),
         .target(
             name: "RevoltKitCore"),
     ]

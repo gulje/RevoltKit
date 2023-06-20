@@ -200,6 +200,149 @@ public extension RevoltREST {
     func bulkDeleteMessages() async throws {
         throw RevoltKitErrors.notImplemented("Not implemented yet")
     }
+    
+    // INTERACTIONS
+    
+    /// Add Reaction to Message
+    ///
+    /// React to a given message.
+    ///
+    /// `PUT /channels/{target}/messages/{message_id}/reactions/{emoji}`
+    ///
+    /// - Parameter target: Channel ID
+    /// - Parameter message: Message ID
+    /// - Parameter emoji: Emoji ID
+    func addReaction(_ target: String, _ message: String, _ emoji: String) async throws {
+        return try await putReq(
+            path: "channels/\(target)/messages/\(message)/reactions/\(emoji)"
+        )
+    }
+    
+    /// Remove Reaction(s) from Message
+    ///
+    /// Remove your own, someone else's or all of a given reaction.
+    /// Requires `ManageMessages` if changing others' reactions.
+    ///
+    /// `DELETE /channels/{target}/messages/{message_id}/reactions/{emoji}`
+    ///
+    /// - Parameter target: Channel ID
+    /// - Parameter message: Message ID
+    /// - Parameter emoji: Emoji ID
+    /// - Parameter user_id: Remove a specific user's reaction
+    /// - Parameter remove_all: Remove all reactions
+    func removeReaction(
+        _ target: String,
+        _ message: String,
+        _ emoji: String,
+        user_id: String? = nil,
+        remove_all: Bool? = nil
+    ) async throws {
+        var query: [URLQueryItem] = []
+        
+        if user_id != nil {
+            query.append(URLQueryItem(name: "user_id", value: user_id))
+        }
+        
+        if remove_all != nil {
+            query.append(URLQueryItem(name: "remove_all", value: "true"))
+        }
+        
+        return try await deleteReq(
+            path: "channels/\(target)/messages/\(message)/reactions/\(emoji)",
+            query: query
+        )
+    }
+    
+    /// Remove All Reactions from Message
+    ///
+    /// Remove your own, someone else's or all of a given reaction.
+    /// Requires `ManageMessages` permission.
+    ///
+    /// `DELETE /channels/{target}/messages/{message_id}/reactions`
+    ///
+    /// - Parameter target: Channel ID
+    /// - Parameter message: Message ID
+    func removeAllReactions(_ target: String, _ message: String) async throws {
+        try await deleteReq(
+            path: "channels/\(target)/messages/\(message)/reactions"
+        )
+    }
+    
+    // GROUPS
+    
+    /// Fetch Group Members
+    ///
+    /// Retrieves all users who are part of this group.
+    ///
+    /// `GET /channels/{target}/members`
+    ///
+    /// - Parameter target: Group ID
+    func fetchGroupMembers(_ target: String) async throws -> [User] {
+        return try await getReq(
+            path: "channels/\(target)/members"
+        )
+    }
+    
+    /// Create Group
+    ///
+    /// Create a new group channel.
+    ///
+    /// `POST /channels/create`
+    func createGroup<B: Encodable>(_ body: B) async throws -> Channel {
+        return try await postReq(
+            path: "channels/create",
+            body: body
+        )
+    }
+    
+    /// Create Group
+    ///
+    /// Create a new group channel.
+    ///
+    /// `POST /channels/create`
+    func createGroup(
+        _ name: String,
+        _ description: String? = nil,
+        _ users: [String],
+        _ nsfw: Bool? = nil
+    ) async throws -> Channel {
+        return try await createGroup(
+            CreateGroupPayload(
+                name: name,
+                description: description,
+                users: users,
+                nsfw: nsfw
+            )
+        )
+    }
+    
+    /// Add Member to Group
+    ///
+    /// Adds another user to the group.
+    ///
+    /// `PUT /channels/{target}/recipients/{member}`
+    ///
+    /// - Parameter target: Group ID
+    /// - Parameter member: User ID
+    func addMemberToGroup(_ target: String, _ member: String) async throws {
+        try await putReq(
+            path: "channels/\(target)/recipients/\(member)"
+        )
+    }
+    
+    /// Remove Member from Group
+    ///
+    /// Removes a user from the group.
+    ///
+    /// `DELETE /channels/{target}/recipients/{member}`
+    ///
+    /// - Parameter target: Group ID
+    /// - Parameter member: User ID
+    func removeMemberFromGroup(_ target: String, _ member: String) async throws {
+        try await deleteReq(
+            path: "channels/\(target)/recipients/\(member)"
+        )
+    }
 }
 
 public enum EditChannelRemove: String, Codable {
@@ -228,4 +371,19 @@ public struct EditChannelPayload: Codable {
     public let archived: Bool?
     
     public let remove: [EditChannelRemove]?
+}
+
+public struct CreateGroupPayload: Codable {
+    /// Group name
+    public let name: String
+    
+    /// Group description
+    public let description: String?
+    
+    /// Array of user IDs to add to the group.
+    /// Must be friends with these users.
+    public let users: [String]
+    
+    /// Whether this group is age-restricted
+    public let nsfw: Bool?
 }
