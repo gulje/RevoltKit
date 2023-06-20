@@ -8,9 +8,17 @@
 import Foundation
 
 public extension RevoltREST {
-    enum RequestError: Error {
+    enum InternalRestError: Error {
         case invalidResponse
         case jsonDecodingError(error: Error)
+        case unexpectedResponseCode(_ code: Int)
+    }
+    
+    enum APIError: Error {
+        case tooMany(type: String, max: UInt)
+        case missingPermission(_ permission: Permission)
+        case missingUserPermission(_ permission: Permission)
+        case error(_ type: String)
     }
     
     enum RequestMethod: String {
@@ -53,11 +61,28 @@ public extension RevoltREST {
         }
         
         guard let (data, response) = try? await RevoltREST.session.data(for: req),
-              let _ = response as? HTTPURLResponse else {
-            throw RequestError.invalidResponse
+              let httpResponse = response as? HTTPURLResponse else {
+            throw InternalRestError.invalidResponse
         }
         
-        Self.log.debug("Raw response: \(String(decoding: data, as: UTF8.self))")
+        guard httpResponse.statusCode / 100 == 2 else {
+            Self.log.error("Response status code is not 2xx", metadata: [
+                "res.statusCode": "\(httpResponse.statusCode)"
+            ])
+            Self.log.debug("Raw response: \(String(decoding: data, as: UTF8.self))")
+            
+            var error: RestError
+            
+            do {
+                error = try RevoltREST.decoder.decode(RestError.self, from: data)
+            } catch {
+                throw InternalRestError.jsonDecodingError(error: error)
+            }
+            
+            try handleError(error)
+            
+            throw InternalRestError.invalidResponse
+        }
         
         return data
     }
@@ -71,7 +96,7 @@ public extension RevoltREST {
         do {
             return try RevoltREST.decoder.decode(T.self, from: respData)
         } catch {
-            throw RequestError.jsonDecodingError(error: error)
+            throw InternalRestError.jsonDecodingError(error: error)
         }
     }
     
@@ -93,7 +118,7 @@ public extension RevoltREST {
         do {
             return try RevoltREST.decoder.decode(D.self, from: respData)
         } catch {
-            throw RequestError.jsonDecodingError(error: error)
+            throw InternalRestError.jsonDecodingError(error: error)
         }
     }
     
@@ -112,7 +137,7 @@ public extension RevoltREST {
         do {
             return try RevoltREST.decoder.decode(Response.self, from: data)
         } catch {
-            throw RequestError.jsonDecodingError(error: error)
+            throw InternalRestError.jsonDecodingError(error: error)
         }
     }
     
@@ -126,7 +151,7 @@ public extension RevoltREST {
         do {
             return try RevoltREST.decoder.decode(Response.self, from: data)
         } catch {
-            throw RequestError.jsonDecodingError(error: error)
+            throw InternalRestError.jsonDecodingError(error: error)
         }
     }
     
@@ -160,7 +185,69 @@ public extension RevoltREST {
         do {
             return try RevoltREST.decoder.decode(Response.self, from: data)
         } catch {
-            throw RequestError.jsonDecodingError(error: error)
+            throw InternalRestError.jsonDecodingError(error: error)
         }
     }
+    
+    func handleError(
+        _ err: RestError
+    ) throws {
+        if err.type.contains("TooMany") || err.type == "GroupTooLarge" {
+            throw APIError.tooMany(type: err.type, max: err.max!)
+        } else if err.type == "MissingPermission" {
+            throw APIError.missingPermission(err.permission!)
+        } else if err.type == "MissingUserPermission" {
+            throw APIError.missingUserPermission(err.permission!)
+        } else {
+            throw APIError.error(err.type)
+        }
+    }
+}
+
+public struct RestError: Codable {
+    public let type: String
+    
+    /// Present in error types with `TooMany` in the name
+    /// Or specifically `GroupTooLarge`
+    public let max: UInt?
+    
+    /// Present in `MissingPermission` or`MissingUserPermission`
+    public let permission: Permission?
+}
+
+public enum Permission: String, Codable {
+    case ManageChannel
+    case ManageServer
+    case ManagePermissions
+    case ManageRole
+    case ManageCustomisation
+    case KickMembers
+    case BanMembers
+    case TimeoutMembers
+    case AssignRoles
+    case ChangeNickname
+    case ManageNicknames
+    case ChangeAvatar
+    case RemoveAvatars
+    case ViewChannel
+    case ReadMessageHistory
+    case SendMessage
+    case ManageMessages
+    case ManageWebhooks
+    case InviteOthers
+    case SendEmbeds
+    case UploadFiles
+    case Masquerade
+    case React
+    case Connect
+    case Speak
+    case Video
+    case MuteMembers
+    case DeafenMembers
+    case MoveMembers
+    case GrantAllSafe
+    case GrantAll
+    case Access
+    case ViewProfile
+    case Invite
 }
