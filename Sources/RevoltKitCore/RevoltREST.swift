@@ -13,7 +13,7 @@ public enum RevoltKitErrors: Error {
 }
 
 public class RevoltREST {
-    static let log = Logger(label: "RevoltREST")
+    static let log = Logger(label: "RevoltREST", level: nil)
     
     static let session: URLSession = {
         let configuration = URLSessionConfiguration.default

@@ -51,7 +51,7 @@ public struct IsBot: Codable {
     public let owner: String
 }
 
-public struct User: Equatable, Codable {
+public class User: Equatable, Codable {
     private enum CodingKeys: String, CodingKey {
         case id = "_id"
         case username
