@@ -19,6 +19,7 @@ public extension RevoltREST {
         case missingPermission(_ permission: Permission)
         case missingUserPermission(_ permission: Permission)
         case error(_ type: String)
+        case unauthorized
     }
     
     enum RequestMethod: String {
@@ -70,6 +71,10 @@ public extension RevoltREST {
                 "res.statusCode": "\(httpResponse.statusCode)"
             ])
             Self.log.debug("Raw response: \(String(decoding: data, as: UTF8.self))")
+            
+            if httpResponse.statusCode == 401 {
+                throw APIError.unauthorized
+            }
             
             var error: RestError
             
