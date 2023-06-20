@@ -7,43 +7,6 @@
 
 import Foundation
 
-public struct GetUserFlagsResponse: Codable {
-    public let flags: Int32
-}
-
-public struct GetMutualWithResponse: Codable {
-    public let users: [String]
-    public let servers: [String]
-}
-
-public enum RemovePayload: String, Codable {
-    case Avatar
-    case StatusText
-    case StatusPresence
-    case ProfileContent
-    case ProfileBackground
-    case DisplayName
-}
-
-public struct EditUserPayload: Codable {
-    public let display_name: String?
-    public let avatar: String?
-    public let status: Status?
-    public let profile: Profile?
-    public let badges: Int32?
-    public let flags: Int32?
-    public let remove: [RemovePayload]?
-}
-
-public struct ChangeUsernamePayload: Codable {
-    public let username: String
-    public let password: String
-}
-
-public struct SendFriendRequestPayload: Codable {
-    public let username: String
-}
-
 public extension RevoltREST {
     // USER INFORMATION
     
@@ -59,7 +22,7 @@ public extension RevoltREST {
     /// `GET /users/{target}`
     ///
     /// - Parameter target: ID of user
-    func getUser(target: String) async throws -> User {
+    func getUser(_ target: String) async throws -> User {
         return try await getReq(path: "users/\(target)")
     }
     
@@ -68,7 +31,7 @@ public extension RevoltREST {
     /// `PATCH /users/{target}`
     ///
     /// - Parameter target: ID of user
-    func editUser<B: Encodable>(target: String, body: B) async throws -> User {
+    func editUser<B: Encodable>(_ target: String, _ body: B) async throws -> User {
         return try await patchReq(
             path: "users/\(target)",
             body: body
@@ -89,8 +52,8 @@ public extension RevoltREST {
         remove: [RemovePayload]?
     ) async throws -> User {
         return try await editUser(
-            target: target,
-            body: EditUserPayload(
+            target,
+            EditUserPayload(
                 display_name: display_name,
                 avatar: avatar,
                 status: status,
@@ -107,7 +70,7 @@ public extension RevoltREST {
     /// `GET /users/{target}/flags`
     ///
     /// - Parameter target: ID of user
-    func getUserFlags(target: String) async throws -> Int32 {
+    func getUserFlags(_ target: String) async throws -> Int32 {
         let response: GetUserFlagsResponse = try await getReq(path: "users/\(target)/flags")
         
         return response.flags
@@ -131,7 +94,7 @@ public extension RevoltREST {
     ///
     /// - Parameter newUsername: New username
     /// - Parameter password: Password
-    func changeUsername(newUsername: String, password: String) async throws -> User {
+    func changeUsername(_ newUsername: String, _ password: String) async throws -> User {
         return try await changeUsername(
             ChangeUsernamePayload(
                 username: newUsername,
@@ -147,7 +110,7 @@ public extension RevoltREST {
     /// `GET /users/{target}/profile`
     ///
     /// - Parameter target: ID of user
-    func fetchProfile(target: String) async throws -> Profile {
+    func fetchProfile(_ target: String) async throws -> Profile {
         return try await getReq(
             path: "users/\(target)/profile"
         )
@@ -186,7 +149,7 @@ public extension RevoltREST {
     /// `GET /users/{target}/mutual`
     ///
     /// - Parameter target: ID of user
-    func getMutualWith(target: String) async throws -> GetMutualWithResponse {
+    func getMutualWith(_ target: String) async throws -> GetMutualWithResponse {
         return try await getReq(path: "users/\(target)/mutual")
     }
     
@@ -197,7 +160,7 @@ public extension RevoltREST {
     /// `PUT /users/{target}/friend`
     ///
     /// - Parameter target: ID of user
-    func acceptFriendRequest(target: String) async throws -> User {
+    func acceptFriendRequest(_ target: String) async throws -> User {
         return try await putReq(
             path: "users/\(target)/friend"
         )
@@ -210,7 +173,7 @@ public extension RevoltREST {
     /// `DELETE /users/{target}/friend`
     ///
     /// - Parameter target: ID of user
-    func denyFriendRequestOrRemoveFriend(target: String) async throws {
+    func denyFriendRequestOrRemoveFriend(_ target: String) async throws {
         try await deleteReq(
             path: "users/\(target)/friend"
         )
@@ -223,7 +186,7 @@ public extension RevoltREST {
     /// `PUT /users/{target}/block`
     ///
     /// - Parameter target: ID of user
-    func blockUser(target: String) async throws -> User {
+    func blockUser(_ target: String) async throws -> User {
         return try await putReq(
             path: "users/\(target)/block"
         )
@@ -236,8 +199,8 @@ public extension RevoltREST {
     /// `DELETE /users/{target}/block`
     ///
     /// - Parameter target: ID of user
-    func unblockUser(target: String) async throws {
-        return try await deleteReq(
+    func unblockUser(_ target: String) async throws {
+        try await deleteReq(
             path: "users/\(target)/block"
         )
     }
@@ -249,10 +212,47 @@ public extension RevoltREST {
     /// `DELETE /users/{target}/block`
     ///
     /// - Parameter target: Username and discriminator combo separated by #
-    func sendFriendRequest(target: String) async throws -> User {
+    func sendFriendRequest(_ target: String) async throws -> User {
         return try await postReq(
             path: "users/friend",
             body: SendFriendRequestPayload(username: target)
         )
     }
+}
+
+public struct GetUserFlagsResponse: Codable {
+    public let flags: Int32
+}
+
+public struct GetMutualWithResponse: Codable {
+    public let users: [String]
+    public let servers: [String]
+}
+
+public enum RemovePayload: String, Codable {
+    case Avatar
+    case StatusText
+    case StatusPresence
+    case ProfileContent
+    case ProfileBackground
+    case DisplayName
+}
+
+public struct EditUserPayload: Codable {
+    public let display_name: String?
+    public let avatar: String?
+    public let status: Status?
+    public let profile: Profile?
+    public let badges: Int32?
+    public let flags: Int32?
+    public let remove: [RemovePayload]?
+}
+
+public struct ChangeUsernamePayload: Codable {
+    public let username: String
+    public let password: String
+}
+
+public struct SendFriendRequestPayload: Codable {
+    public let username: String
 }

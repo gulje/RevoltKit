@@ -46,8 +46,7 @@ public extension RevoltREST {
         var req = URLRequest(url: reqURL)
         req.httpMethod = method.rawValue
         
-        // TODO: Support for session tokens
-        req.setValue(token, forHTTPHeaderField: "x-bot-token")
+        req.setValue(token, forHTTPHeaderField: RevoltKitConfig.default.isBot ? "x-bot-token" : "x-session-token")
         
         if body != nil {
             req.httpBody = body

@@ -28,40 +28,23 @@ public struct Metadata: Codable, Equatable {
 }
 
 public struct File: Equatable, Codable {
-    private var _id: String;
-    
-    public init(
-        _id: String,
-        tag: String,
-        filename: String,
-        content_type: String,
-        size: UInt,
-        deleted: Bool?,
-        reported: Bool?,
-        message_id: String?,
-        user_id: String?,
-        server_id: String?,
-        object_id: String?,
-        metadata: Metadata
-    ) {
-        self._id = _id
-        self.tag = tag
-        self.filename = filename
-        self.content_type = content_type
-        self.size = size
-        self.deleted = deleted
-        self.reported = reported
-        self.message_id = message_id
-        self.user_id = user_id
-        self.server_id = server_id
-        self.object_id = object_id
-        self.metadata = metadata
+    private enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case tag
+        case filename
+        case content_type
+        case size
+        case deleted
+        case reported
+        case message_id
+        case user_id
+        case server_id
+        case object_id
+        case metadata
     }
     
     /// Unique ID
-    public var id: String {
-        get { return _id }
-    }
+    public let id: String
     
     /// Tag / bucket this file was uploaded to
     public let tag: String

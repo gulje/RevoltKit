@@ -51,48 +51,29 @@ public struct IsBot: Codable {
     public let owner: String
 }
 
-public struct User: Identifiable, Equatable, Codable {
-    private var _id: String
-    
-    public var id: String {
-        get { return _id }
+public struct User: Equatable, Codable {
+    private enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case username
+        case discriminator
+        case display_name
+        case avatar
+        case badges
+        case status
+        case profile
+        case flags
+        case privileged
+        case bot
+        case relationship
+        case online
+        case relations
     }
-    
+
     public static func == (lhs: User, rhs: User) -> Bool {
         lhs.id == rhs.id
     }
     
-    public init(
-        _id: String,
-        username: String,
-        discriminator: String,
-        display_name: String?,
-        avatar: File?,
-        badges: Int32?,
-        status: Status?,
-        profile: Profile?,
-        flags: Int32?,
-        privileged: Bool?,
-        bot: IsBot?,
-        relationship: Relationship?,
-        online: Bool?,
-        relations: [Relationship]
-    ) {
-        self._id = _id
-        self.username = username
-        self.discriminator = discriminator
-        self.display_name = display_name
-        self.avatar = avatar
-        self.badges = badges
-        self.status = status
-        self.profile = profile
-        self.flags = flags
-        self.relations = relations
-        self.privileged = privileged
-        self.bot = bot
-        self.relationship = relationship
-        self.online = online
-    }
+    public let id: String
     
     /// Username of the user
     public let username: String

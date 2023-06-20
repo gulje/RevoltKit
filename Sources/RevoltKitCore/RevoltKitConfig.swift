@@ -20,13 +20,17 @@ public struct RevoltKitConfig {
         "wss://ws.revolt.chat?version=\(version)&format=json"
     }
     
+    public var isBot: Bool
+    
     public init(
         baseURL: String = "revolt.chat",
-        version: Int = 1
+        version: Int = 1,
+        isBot: Bool = true
     ) {
         self.cdnURL = "https://autumn.revolt.chat/"
         self.baseURL = URL(string: "https://\(baseURL)/")!
         self.version = version
+        self.isBot = isBot
         
         self.restBase = self.baseURL.appendingPathComponent("api")
         
