@@ -16,8 +16,34 @@ public struct GetMutualWithResponse: Codable {
     public let servers: [String]
 }
 
+public enum RemovePayload: String, Codable {
+    case Avatar
+    case StatusText
+    case StatusPresence
+    case ProfileContent
+    case ProfileBackground
+    case DisplayName
+}
+
+public struct EditUserPayload: Codable {
+    public let display_name: String?
+    public let avatar: String?
+    public let status: Status?
+    public let profile: Profile?
+    public let badges: Int32?
+    public let flags: Int32?
+    public let remove: [RemovePayload]?
+}
+
+public struct ChangeUsernamePayload: Codable {
+    public let username: String
+    public let password: String
+}
+
 public extension RevoltREST {
-    /// Get Current User
+    // USER INFORMATION
+    
+    /// Fetch Self
     ///
     /// `GET /users/@me`
     func getCurrentUser() async throws -> User {
@@ -26,32 +52,168 @@ public extension RevoltREST {
     
     /// Get User
     ///
-    /// `GET /users/{user.id}`
+    /// `GET /users/{target}`
     ///
-    /// - Parameter user: ID of user
-    func getUser(user: String) async throws -> User {
-        return try await getReq(path: "users/\(user)")
+    /// - Parameter target: ID of user
+    func getUser(target: String) async throws -> User {
+        return try await getReq(path: "users/\(target)")
+    }
+    
+    /// Edit (Currently Authenticated) User
+    ///
+    /// `PATCH /users/{target}`
+    ///
+    /// - Parameter target: ID of user
+    func editUser<B: Encodable>(target: String, body: B) async throws -> User {
+        return try await patchReq(
+            path: "users/\(target)",
+            body: body
+        )
+    }
+    
+    /// Edit (Currently Authenticated) User
+    ///
+    /// `PATCH /users/{target}`
+    func editUser(
+        target: String,
+        display_name: String?,
+        avatar: String?,
+        status: Status?,
+        profile: Profile?,
+        badges: Int32?,
+        flags: Int32?,
+        remove: [RemovePayload]?
+    ) async throws -> User {
+        return try await editUser(
+            target: target,
+            body: EditUserPayload(display_name: display_name, avatar: avatar, status: status, profile: profile, badges: badges, flags: flags, remove: remove)
+        )
     }
     
     /// Get User Flags
     ///
-    /// `GET /users/{user.id}/flags`
+    /// `GET /users/{target}/flags`
     ///
-    /// - Parameter user: ID of user
-    func getUserFlags(user: String) async throws -> Int32 {
-        let response: GetUserFlagsResponse = try await getReq(path: "users/\(user)/flags")
+    /// - Parameter target: ID of user
+    func getUserFlags(target: String) async throws -> Int32 {
+        let response: GetUserFlagsResponse = try await getReq(path: "users/\(target)/flags")
         
         return response.flags
     }
     
+    /// Change Username
+    ///
+    /// `PATCH /users/@me/username`
+    ///
+    /// - Parameter body: The data
+    func changeUsername<B: Encodable>(_ body: B) async throws -> User {
+        return try await patchReq(
+            path: "users/@me/username",
+            body: body
+        )
+    }
+    
+    /// Change Username
+    ///
+    /// `PATCH /users/@me/username`
+    ///
+    /// - Parameter newUsername: New username
+    /// - Parameter password: Password
+    func changeUsername(newUsername: String, password: String) async throws -> User {
+        return try await changeUsername(
+            ChangeUsernamePayload(
+                username: newUsername,
+                password: password
+            )
+        )
+    }
+    
+    /// Fetch User Profile
+    ///
+    /// Will fail if you do not have permission to access the other user's profile.
+    ///
+    /// `GET /users/{target}/profile`
+    ///
+    /// - Parameter target: ID of user
+    func fetchProfile(target: String) async throws -> Profile {
+        return try await getReq(
+            path: "users/\(target)/profile"
+        )
+    }
+    
+    // DIRECT MESSAGING
+    
+    // TODO: Implement direct message handling
+    /// Fetch Direct Message Channels
+    ///
+    /// This fetches your direct messages, including any DM and group DM conversations.
+    ///
+    /// `GET /users/dms`
+    func getDirectMessages() async throws {
+        throw RevoltKitErrors.notImplemented("Not implemented yet")
+    }
+    
+    // TODO: Implement direct message handling
+    /// Open Direct Message
+    ///
+    /// Open a DM with another user.
+    /// If the target is oneself, a saved messages channel is returned.
+    ///
+    /// `GET /users/{target}/dm`
+    func openDirectMessage() async throws {
+        throw RevoltKitErrors.notImplemented("Not implemented yet")
+    }
+    
+    // RELATIONSHIPS
+    
     /// Fetch Mutual Friends and Servers
+    ///
     /// Retrieve a list of mutual friends and servers with another user.
     /// Does not work with bot account.
     ///
-    /// `GET /users/{user.id}/mutual`
+    /// `GET /users/{target}/mutual`
     ///
-    /// - Parameter user: ID of user
-    func getMutualWith(user: String) async throws -> GetMutualWithResponse {
-        return try await getReq(path: "users/\(user)/mutual")
+    /// - Parameter target: ID of user
+    func getMutualWith(target: String) async throws -> GetMutualWithResponse {
+        return try await getReq(path: "users/\(target)/mutual")
+    }
+    
+    /// Accept Friend Request
+    ///
+    /// Accept another user's friend request.
+    ///
+    /// `PUT /users/{target}/friend`
+    ///
+    /// - Parameter target: ID of user
+    func acceptFriendRequest(target: String) async throws -> User {
+        return try await putReq(
+            path: "users/\(target)/friend"
+        )
+    }
+    
+    /// Deny Friend Request / Remove Friend
+    ///
+    /// Denies another user's friend request or removes an existing friend.
+    ///
+    /// `DELETE /users/{target}/friend`
+    ///
+    /// - Parameter target: ID of user
+    func denyFriendRequestOrRemoveFriend(target: String) async throws {
+        try await deleteReq(
+            path: "users/\(target)/friend"
+        )
+    }
+    
+    /// Block User
+    ///
+    /// Block another user by their id.
+    ///
+    /// `PUT /users/{target}/block`
+    ///
+    /// - Parameter target: ID of user
+    func blockUser(target: String) async throws -> User {
+        return try await putReq(
+            path: "users/\(target)/block"
+        )
     }
 }

@@ -117,22 +117,42 @@ public extension RevoltREST {
         }
     }
     
+    /// Make a `PUT` request to the Revolt REST API
+    func putReq<Response: Decodable>(path: String) async throws -> Response {
+        let data = try await makeRequest(
+            path: path,
+            method: .put
+        )
+        
+        do {
+            return try RevoltREST.decoder.decode(Response.self, from: data)
+        } catch {
+            throw RequestError.jsonDecodingError(error: error)
+        }
+    }
+    
     /// Make a `DELETE` request to the Revolt REST API
     func deleteReq(path: String) async throws {
         _ = try await makeRequest(path: path, method: .delete)
     }
     
     /// Make a `PATCH` request to the Revolt REST API
-    func patchReq<B: Encodable>(
+    func patchReq<B: Encodable, Response: Decodable>(
         path: String,
         body: B
-    ) async throws {
+    ) async throws -> Response {
         let payload: Data?
         payload = try? RevoltREST.encoder.encode(body)
-        _ = try await makeRequest(
+        let data = try await makeRequest(
             path: path,
             body: payload,
             method: .patch
         )
+        
+        do {
+            return try RevoltREST.decoder.decode(Response.self, from: data)
+        } catch {
+            throw RequestError.jsonDecodingError(error: error)
+        }
     }
 }

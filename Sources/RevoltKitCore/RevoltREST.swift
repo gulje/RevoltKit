@@ -8,6 +8,10 @@
 import Foundation
 import Logging
 
+public enum RevoltKitErrors: Error {
+    case notImplemented(String)
+}
+
 public class RevoltREST {
     static let log = Logger(label: "RevoltREST")
     
