@@ -130,9 +130,18 @@ public extension RevoltREST {
         }
     }
     
+    /// Make a `PUT` request to the Revolt REST API wthout Response
+    func putReq(path: String) async throws {
+        _ = try await makeRequest(path: path, method: .put)
+    }
+    
     /// Make a `DELETE` request to the Revolt REST API
     func deleteReq(path: String) async throws {
         _ = try await makeRequest(path: path, method: .delete)
+    }
+    
+    func deleteReq(path: String, query: [URLQueryItem] = []) async throws {
+        _ = try await makeRequest(path: path, query: query, method: .delete)
     }
     
     /// Make a `PATCH` request to the Revolt REST API
