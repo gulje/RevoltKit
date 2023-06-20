@@ -7,41 +7,6 @@
 
 import Foundation
 
-public struct FetchBotResponse: Codable {
-    public let bot: Bot
-    public let user: User
-}
-
-public struct FetchBotsResponse: Codable {
-    public let bots: [Bot]
-    public let users: [User]
-}
-
-public struct CreateBotPayload: Codable {
-    public let name: String
-}
-
-public struct InviteBotServerPayload: Codable {
-    public let server: String
-}
-
-public struct InviteBotGroupPayload: Codable {
-    public let group: String
-}
-
-public enum RemoveBotPayload: String, Codable {
-    case Token
-    case InteractionsURL
-}
-
-public struct EditBotPayload: Codable {
-    public let name: String?
-    public let `public`: Bool?
-    public let analytics: Bool?
-    public let interactions_url: String?
-    public let remove: [RemoveBotPayload]?
-}
-
 public extension RevoltREST {
     /// Create Bot
     ///
@@ -169,4 +134,39 @@ public extension RevoltREST {
             )
         )
     }
+}
+
+public struct FetchBotResponse: Codable {
+    public let bot: Bot
+    public let user: User
+}
+
+public struct FetchBotsResponse: Codable {
+    public let bots: [Bot]
+    public let users: [User]
+}
+
+public struct CreateBotPayload: Codable {
+    public let name: String
+}
+
+public struct InviteBotServerPayload: Codable {
+    public let server: String
+}
+
+public struct InviteBotGroupPayload: Codable {
+    public let group: String
+}
+
+public enum RemoveBotPayload: String, Codable {
+    case Token
+    case InteractionsURL
+}
+
+public struct EditBotPayload: Codable {
+    public let name: String?
+    public let `public`: Bool?
+    public let analytics: Bool?
+    public let interactions_url: String?
+    public let remove: [RemoveBotPayload]?
 }
