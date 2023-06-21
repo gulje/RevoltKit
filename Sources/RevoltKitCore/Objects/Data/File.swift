@@ -34,8 +34,8 @@ public struct File: Equatable, Codable {
         case filename
         case contentType = "content_type"
         case size
-        case deleted
-        case reported
+        case isDeleted = "deleted"
+        case isReported = "reported"
         case messageID = "message_id"
         case userID = "user_id"
         case serverID = "server_id"
@@ -59,10 +59,10 @@ public struct File: Equatable, Codable {
     public let size: UInt
     
     /// Whether this file was deleted
-    public let deleted: Bool?
+    public let isDeleted: Bool?
     
     /// Whether this file was reported
-    public let reported: Bool?
+    public let isReported: Bool?
     
     public let messageID: String?
     

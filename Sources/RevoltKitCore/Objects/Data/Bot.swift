@@ -12,9 +12,9 @@ public struct Bot: Identifiable, Codable, Equatable {
         case id = "_id"
         case owner
         case token
-        case `public`
+        case isPublic = "public"
         case analytics
-        case discoverable
+        case isDiscoverable = "discoverable"
         case interactionsURL = "interactions_url"
         case termsOfServiceURL = "terms_of_service_url"
         case privacyPolicyURL  = "privacy_policy_url"
@@ -31,13 +31,13 @@ public struct Bot: Identifiable, Codable, Equatable {
     public let token: String
     
     /// Whether the bot is public (may be invited by anyone)
-    public let `public`: Bool
+    public let isPublic: Bool
     
     /// Whether to enable analytics
     public let analytics: Bool?
     
     /// Whether this bot should be publicly discoverable
-    public let discoverable: Bool?
+    public let isDiscoverable: Bool?
     
     /// Reserved; URL for handling interactions
     public let interactionsURL: String?

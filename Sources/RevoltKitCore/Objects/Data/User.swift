@@ -62,10 +62,10 @@ public struct User: Equatable, Codable {
         case status
         case profile
         case flags
-        case privileged
+        case isPrivileged = "privileged"
         case bot
         case relationship
-        case online
+        case isOnline = "online"
         case relations
     }
 
@@ -100,7 +100,7 @@ public struct User: Equatable, Codable {
     public let flags: UInt32?
     
     /// Whether this user is privileged
-    public let privileged: Bool?
+    public let isPrivileged: Bool?
     
     /// Bot information for if the user is a bot
     public let bot: IsBot?
@@ -109,7 +109,7 @@ public struct User: Equatable, Codable {
     public let relationship: Relationship?
     
     /// Whether the user is currently online
-    public let online: Bool?
+    public let isOnline: Bool?
     
     public let relations: [Relationship]?
 }

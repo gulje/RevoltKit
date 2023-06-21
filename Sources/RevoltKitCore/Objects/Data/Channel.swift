@@ -34,7 +34,7 @@ public struct Channel: Codable, Equatable {
         case user
         
         // Present in DirectMessage
-        case active
+        case isActive = "active"
         
         // Present in Group
         case permissions
@@ -54,7 +54,7 @@ public struct Channel: Codable, Equatable {
         // Present in Group, TextChannel and VoiceChannel
         case icon
         case description
-        case nsfw
+        case isNSFW = "nsfw"
         case name
     }
     
@@ -68,7 +68,7 @@ public struct Channel: Codable, Equatable {
     public let user: String?
     
     /// Whether this direct message channel is currently open on both sides, present in `DirectMessage`
-    public let active: Bool?
+    public let isActive: Bool?
     
     /// Permissions assigned to members of this group (does not apply to the owner of the group), present in `Group`
     public let permissions: UInt64?
@@ -101,5 +101,5 @@ public struct Channel: Codable, Equatable {
     public let name: String?
     
     /// Whether this channel is marked as not safe for work
-    public let nsfw: Bool?
+    public let isNSFW: Bool?
 }
