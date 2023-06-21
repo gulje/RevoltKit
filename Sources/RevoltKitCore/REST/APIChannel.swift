@@ -7,6 +7,13 @@
 
 import Foundation
 
+func buildQueryFromCodable<S: Codable>(_ s: S) throws -> [URLQueryItem] {
+    let jsonData = try RevoltREST.encoder.encode(s)
+    let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as! [String: Any]
+    
+    return json.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
+}
+
 public extension RevoltREST {
     // CHANNEL INFORMATION
     
@@ -134,13 +141,68 @@ public extension RevoltREST {
         )
     }
     
-    // TODO: Implement messages
     /// Fetch Messages
     ///
     /// Fetch multiple messages.
     ///
     /// `GET /channels/{target}/messages`
-    func fetchMessages() async throws {
+    ///
+    /// - Parameters:
+    ///   - target: Channel ID
+    ///   - body: The options for fetching action
+    func fetchMessages<B: Codable>(_ target: String, _ body: B) async throws -> [Message] {
+        var query = try buildQueryFromCodable(body)
+        
+        if (query.map { $0.name }).contains("include_users") {
+            query.append(URLQueryItem(name: "include_users", value: "false"))
+        }
+        
+        return try await getReq(
+            path: "channels/\(target)/messages",
+            query: query
+        )
+    }
+    
+    /// Fetch Messages
+    ///
+    /// Fetch multiple messages.
+    ///
+    /// `GET /channels/{target}/messages`
+    ///
+    /// - Parameters:
+    ///   - target: Channel ID
+    ///   - body: The options for fetching action
+    func fetchMessages(
+        _ target: String,
+        limit: Int64? = nil,
+        before: String? = nil,
+        after: String? = nil,
+        sort: MessageSortDirection? = nil,
+        nearby: String? = nil
+    ) async throws -> [Message] {
+        return try await fetchMessages(
+            target,
+            FetchMessagesPayload(
+                limit: limit,
+                before: before,
+                after: after,
+                sort: sort,
+                nearby: nearby,
+                includeUsers: false
+            )
+        )
+    }
+    
+    /// Fetch Messages
+    ///
+    /// Fetch multiple messages.
+    ///
+    /// `GET /channels/{target}/messages`
+    ///
+    /// - Parameters:
+    ///   - target: Channel ID
+    ///   - body: The options for fetching action
+    func fetchMessagesWithUsers<B: Codable>(_ target: String, _ body: B) async throws {
         throw RevoltKitErrors.notImplemented("Not implemented yet")
     }
     
@@ -164,14 +226,19 @@ public extension RevoltREST {
         throw RevoltKitErrors.notImplemented("Not implemented yet")
     }
     
-    // TODO: Implement messages
     /// Fetch Message
     ///
     /// Retrieves a message by its ID.
     ///
     /// `GET /channels/{target}/messages/{message_id}`
-    func fetchMessage() async throws {
-        throw RevoltKitErrors.notImplemented("Not implemented yet")
+    ///
+    /// - Parameters:
+    ///   - target: Channel ID
+    ///   - message: Message ID
+    func fetchMessage(_ target: String, _ message: String) async throws -> Message {
+        return try await getReq(
+            path: "channels/\(target)/messages/\(message)"
+        )
     }
     
     // TODO: Implement messages
@@ -397,4 +464,42 @@ public struct CreateGroupPayload: Codable {
     
     /// Whether this group is age-restricted
     public let nsfw: Bool?
+}
+
+public struct FetchMessagesPayload: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case limit
+        case before
+        case after
+        case sort
+        case nearby
+        case includeUsers = "include_users"
+    }
+    
+    /// Maximum numbers of messages to fetch/
+    /// For fetching nearby messages, this is `(limit + 1)`.
+    public let limit: Int64?
+    
+    /// Message ID before which messages should be fetched.
+    public let before: String?
+    
+    /// Message ID after which messages should be fetched.
+    public let after: String?
+    
+    /// Message sort direction.
+    public let sort: MessageSortDirection?
+    
+    /// Message ID to search around.
+    ///
+    /// Specifying `nearby` ignores `before`, `after` and `sort`. It will also take half of limit rounded as the limits to each side. It also fetches the message ID specified.
+    public let nearby: String?
+    
+    /// Indicates whether to include user (and member, if server channel) objects.
+    public let includeUsers: Bool?
+}
+
+public enum MessageSortDirection: String, Codable {
+    case Relevance
+    case Latest
+    case Oldest
 }
