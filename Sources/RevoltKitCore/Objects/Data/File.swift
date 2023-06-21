@@ -32,14 +32,14 @@ public struct File: Equatable, Codable {
         case id = "_id"
         case tag
         case filename
-        case content_type
+        case contentType = "content_type"
         case size
         case deleted
         case reported
-        case message_id
-        case user_id
-        case server_id
-        case object_id
+        case messageID = "message_id"
+        case userID = "user_id"
+        case serverID = "server_id"
+        case objectID = "object_id"
         case metadata
     }
     
@@ -53,7 +53,7 @@ public struct File: Equatable, Codable {
     public let filename: String
     
     /// Raw  content type of this file
-    public let content_type: String
+    public let contentType: String
     
     /// Size of this file (in bytes)
     public let size: UInt
@@ -64,14 +64,14 @@ public struct File: Equatable, Codable {
     /// Whether this file was reported
     public let reported: Bool?
     
-    public let message_id: String?
+    public let messageID: String?
     
-    public let user_id: String?
+    public let userID: String?
     
-    public let server_id: String?
+    public let serverID: String?
     
     /// ID of the object this file is associated with
-    public let object_id: String?
+    public let objectID: String?
     
     /// Metadata associated with file
     public let metadata: Metadata

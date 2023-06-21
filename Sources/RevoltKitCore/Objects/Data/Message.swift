@@ -90,12 +90,17 @@ public struct Masquerade: Codable {
 // INTERACTIONS
 
 public struct Interactions: Codable {
+    enum CodingKeys: String, CodingKey {
+        case reactions
+        case restrictReactions = "restrict_reactions"
+    }
+    
     /// Reactions which should always appear and be distinct
     public let reactions: [String]?
     
     /// Whether reactions should be restricted to the given list.
     /// Can only be set to true if reactions list is of at least length 1
-    public let restrict_reactions: Bool?
+    public let restrictReactions: Bool?
 }
 
 // WEBHOOK
@@ -113,35 +118,35 @@ public struct SystemMessageData: Codable {
     /// Present in `text`
     public let content: String?
     
-    /// Present in `user_added`, `user_remove`, `user_joined`, `user_left`,
-    /// `user_kicked`, `user_banned`
+    /// Present in `userAdded`, `userRemove`, `userJoined`, `userLeft`,
+    /// `userKicked`, `userBanned`
     public let id: String?
     
-    /// Present in `user_added`, `user_remove`, `channel_renamed`, `channel_description_changed`,
-    /// `channel_icon_changed`
+    /// Present in `userAdded`, `userRemove`, `channelRenamed`, `channelDescriptionChanged`,
+    /// `channelIconChanged`
     public let by: String?
     
-    /// Present in `channel_renamed`
+    /// Present in `channelRenamed`
     public let name: String?
     
-    /// Present in `channel_ownership_changed`
+    /// Present in `channelOwnershipChanged`
     public let from: String?
     
-    /// Present in `channel_ownership_changed`
+    /// Present in `channelOwnershipChange`
     public let to: String?
 }
 
 public enum SystemMessageType: String, Codable {
     case text
-    case user_added
-    case user_remove
-    case user_joined
-    case user_left
-    case user_kicked
-    case user_banned
-    case channel_renamed
-    case channel_description_changed
-    case channel_icon_changed
-    case channel_ownership_changed
+    case userAdded = "user_added"
+    case userRemove = "user_remove"
+    case userJoined = "user_joined"
+    case userLeft = "user_left"
+    case userKicked = "user_kicked"
+    case userBanned = "user_banned"
+    case channelRenamed = "channel_renamed"
+    case channelDescriptionChanged = "channel_description_changed"
+    case channelIconChanged = "channel_icon_changed"
+    case channelOwnershipChanged = "channel_ownership_changed"
 }
 

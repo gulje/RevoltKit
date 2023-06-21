@@ -8,13 +8,31 @@
 import Foundation
 
 public struct Embed: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case type
+        case url
+        case originalURL = "original_url"
+        case special
+        case title
+        case description
+        case image
+        case video
+        case siteName = "site_name"
+        case iconURL = "icon_url"
+        case colour
+        case width
+        case height
+        case size
+        case media
+    }
+    
     public let type: EmbedType
     
     /// Direct URL to web page, video or image ,present in `Website`,  `Image`, `Text` and`Video`
     public let url: String?
     
     /// Original direct URL, present in `Website`
-    public let original_url: String?
+    public let originalURL: String?
     
     /// Present in `Website`
     public let special: SpecialRemoteContent?
@@ -32,10 +50,10 @@ public struct Embed: Codable {
     public let video: EmbeddedVideo?
     
     /// Present in `Website`
-    public let site_name: String?
+    public let siteName: String?
     
     /// Present in `Website` and `Text`
-    public let icon_url: String?
+    public let iconURL: String?
     
     /// Present in `Website` and `Text`
     public let colour: String?
@@ -80,6 +98,13 @@ public enum EmbeddedImageSizeType: String, Codable {
 }
 
 public struct SpecialRemoteContent: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case type
+        case id
+        case timestamp
+        case contentType = "content_type"
+    }
+    
     public let type: SpecialRemoteContentType
     
     /// Not present in `None`, `GIF` and `Soundcloud`
@@ -89,7 +114,7 @@ public struct SpecialRemoteContent: Codable {
     public let timestamp: String?
     
     /// Present in `Lightspeed`, `Bandcamp`, `Spotify` and `Twitch`
-    public let content_type: SpecialRemoteContentTypes?
+    public let contentType: SpecialRemoteContentTypes?
 }
 
 public enum SpecialRemoteContentTypes: Codable {

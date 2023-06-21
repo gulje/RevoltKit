@@ -15,9 +15,9 @@ public struct Bot: Identifiable, Codable, Equatable {
         case `public`
         case analytics
         case discoverable
-        case interactions_url
-        case terms_of_service_url
-        case privacy_policy_url
+        case interactionsURL = "interactions_url"
+        case termsOfServiceURL = "terms_of_service_url"
+        case privacyPolicyURL  = "privacy_policy_url"
         case flags
     }
     
@@ -40,13 +40,13 @@ public struct Bot: Identifiable, Codable, Equatable {
     public let discoverable: Bool?
     
     /// Reserved; URL for handling interactions
-    public let interactions_url: String?
+    public let interactionsURL: String?
     
     /// URL for terms of service
-    public let terms_of_service_url: String?
+    public let termsOfServiceURL: String?
     
     /// URL for privacy policy
-    public let privacy_policy_url: String?
+    public let privacyPolicyURL: String?
     
     /// Bot flags
     public let flags: UInt32?
