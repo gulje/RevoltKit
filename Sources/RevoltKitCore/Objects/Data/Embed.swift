@@ -8,6 +8,55 @@
 import Foundation
 
 public struct Embed: Codable {
+    /**
+     Represents an embedded content object, such as a website, image, video, or text.
+     */
+    
+    /// The type of the embedded content, indicating its category. This field is present at all times.
+    public let type: EmbedType
+    
+    /// The direct URL to the web page, video, or image associated with the embedded content. This field is present in embeds of type `Website`, `Image`, `Text`, and `Video`.
+    public let url: String?
+    
+    /// The original direct URL of the embedded content. This field is present in embeds of type `Website`.
+    public let originalURL: String?
+    
+    /// Special remote content associated with the embedded content. This field is present in embeds of type `Website`.
+    public let special: SpecialRemoteContent?
+    
+    /// The title of the embedded content. This field is present in embeds of type `Website` and `Text`.
+    public let title: String?
+    
+    /// The description of the embedded content. This field is present in embeds of type `Website` and `Text`.
+    public let description: String?
+    
+    /// The image associated with the embedded content. This field is present in embeds of type `Website`.
+    public let image: EmbeddedImage?
+    
+    /// The video associated with the embedded content. This field is present in embeds of type `Website`.
+    public let video: EmbeddedVideo?
+    
+    /// The name of the site associated with the embedded content. This field is present in embeds of type `Website`.
+    public let siteName: String?
+    
+    /// The URL of the icon associated with the embedded content. This field is present in embeds of type `Website` and `Text`.
+    public let iconURL: String?
+    
+    /// The CSS color associated with the embedded content. This field is present in embeds of type `Website` and `Text`.
+    public let colour: String?
+    
+    /// The width of the embedded image or video. This field is present in embeds of type `Image` and `Video`.
+    public let width: Int?
+    
+    /// The height of the embedded image or video. This field is present in embeds of type `Image` and `Video`.
+    public let height: Int?
+    
+    /// The size type of the embedded image. This field is present in embeds of type `Image`.
+    public let size: EmbeddedImageSizeType?
+    
+    /// The media file associated with the embedded text. This field is present in embeds of type `Text`.
+    public let media: File?
+    
     private enum CodingKeys: String, CodingKey {
         case type
         case url
@@ -25,52 +74,9 @@ public struct Embed: Codable {
         case size
         case media
     }
-    
-    public let type: EmbedType
-    
-    /// Direct URL to web page, video or image ,present in `Website`,  `Image`, `Text` and`Video`
-    public let url: String?
-    
-    /// Original direct URL, present in `Website`
-    public let originalURL: String?
-    
-    /// Present in `Website`
-    public let special: SpecialRemoteContent?
-    
-    /// Present in `Website` and `Text`
-    public let title: String?
-    
-    /// Present in `Website` and `Text`
-    public let description: String?
-    
-    /// Present in `Website`
-    public let image: EmbeddedImage?
-    
-    /// Present in `Website`
-    public let video: EmbeddedVideo?
-    
-    /// Present in `Website`
-    public let siteName: String?
-    
-    /// Present in `Website` and `Text`
-    public let iconURL: String?
-    
-    /// Present in `Website` and `Text`
-    public let colour: String?
-    
-    /// Present in `Image`, `Video`
-    public let width: Int?
-    
-    /// Present in `Image`, `Video`
-    public let height: Int?
-    
-    /// Present in `Image`
-    public let size: EmbeddedImageSizeType?
-    
-    /// Present in `Text`
-    public let media: File?
 }
 
+/// The type of an embedded content.
 public enum EmbedType: String, Codable {
     case Website
     case Image
@@ -80,24 +86,49 @@ public enum EmbedType: String, Codable {
 }
 
 public struct EmbeddedVideo: Codable {
+    /**
+     Represents an embedded video object.
+     */
+    
+    /// The URL of the embedded video.
     public let url: String
+    
+    /// The width of the embedded video.
     public let width: Int
+    
+    /// The height of the embedded video.
     public let height: Int
 }
 
 public struct EmbeddedImage: Codable {
+    /**
+     Represents an embedded image object.
+     */
+    
+    /// The URL of the embedded image.
     public let url: String
+    
+    /// The width of the embedded image.
     public let width: Int
+    
+    /// The height of the embedded image.
     public let height: Int
+    
+    /// The size type of the embedded image.
     public let size: EmbeddedImageSizeType
 }
 
+/// The size type of an embedded image.
 public enum EmbeddedImageSizeType: String, Codable {
     case Large
     case Preview
 }
 
 public struct SpecialRemoteContent: Codable {
+    /**
+     Represents special remote content associated with an embedded object.
+     */
+    
     private enum CodingKeys: String, CodingKey {
         case type
         case id
@@ -105,19 +136,24 @@ public struct SpecialRemoteContent: Codable {
         case contentType = "content_type"
     }
     
+    /// The type of special remote content.
     public let type: SpecialRemoteContentType
     
-    /// Not present in `None`, `GIF` and `Soundcloud`
+    /// The ID associated with the special remote content. This field is not present in special remote content of types `None`, `GIF`, and `Soundcloud`.
     public let id: String?
     
-    /// Present in `YouTube`
+    /// The timestamp associated with the special remote content. This field is present in special remote content of type `YouTube`.
     public let timestamp: String?
     
-    /// Present in `Lightspeed`, `Bandcamp`, `Spotify` and `Twitch`
+    /// The content type of the special remote content. This field is present in special remote content of types `Lightspeed`, `Bandcamp`, `Spotify`, and `Twitch`.
     public let contentType: SpecialRemoteContentTypes?
 }
 
 public enum SpecialRemoteContentTypes: Codable {
+    /**
+     Represents the content type of special remote content.
+     */
+    
     case string(String)
     case enumValue(SpecialRemoteContentTypeEnum)
     
@@ -141,19 +177,23 @@ public enum SpecialRemoteContentTypes: Codable {
 }
 
 public enum SpecialRemoteContentTypeEnum: String, Codable {
-    /// `Twitch`
+    /// The content type for special remote content of type `Twitch`.
     case Video
     case Clip
     
-    /// `Bandcamp`
+    /// The content type for special remote content of type `Bandcamp`.
     case Album
     case Track
     
-    /// `Lightspeed` and `Twitch`
+    /// The content type for special remote content of types `Lightspeed` and `Twitch`.
     case Channel
 }
 
 public enum SpecialRemoteContentType: String, Codable {
+    /**
+     Represents the type of special remote content.
+     */
+    
     case None
     case GIF
     case YouTube

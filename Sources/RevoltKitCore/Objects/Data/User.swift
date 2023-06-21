@@ -52,27 +52,6 @@ public struct IsBot: Codable {
 }
 
 public struct User: Equatable, Codable {
-    private enum CodingKeys: String, CodingKey {
-        case id = "_id"
-        case username
-        case discriminator
-        case displayName = "display_name"
-        case avatar
-        case badges
-        case status
-        case profile
-        case flags
-        case isPrivileged = "privileged"
-        case bot
-        case relationship
-        case isOnline = "online"
-        case relations
-    }
-
-    public static func == (lhs: User, rhs: User) -> Bool {
-        lhs.id == rhs.id
-    }
-    
     public let id: String
     
     /// Username of the user
@@ -112,4 +91,25 @@ public struct User: Equatable, Codable {
     public let isOnline: Bool?
     
     public let relations: [Relationship]?
+    
+    private enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case username
+        case discriminator
+        case displayName = "display_name"
+        case avatar
+        case badges
+        case status
+        case profile
+        case flags
+        case isPrivileged = "privileged"
+        case bot
+        case relationship
+        case isOnline = "online"
+        case relations
+    }
+
+    public static func == (lhs: User, rhs: User) -> Bool {
+        lhs.id == rhs.id
+    }
 }

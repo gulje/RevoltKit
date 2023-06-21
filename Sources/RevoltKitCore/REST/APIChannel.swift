@@ -29,8 +29,9 @@ public extension RevoltREST {
     ///
     /// `DELETE /channels/{target}`
     ///
-    /// - Parameter target: ID of the channel
-    /// - Parameter leave_silently: Whether to not send a leave message
+    /// - Parameters:
+    ///   - target: ID of the channel
+    ///   - leave_silently: Whether to not send a leave message
     func closeChannel(_ target: String, leave_silently: Bool = false) async throws {
         return try await deleteReq(
             path: "channels/\(target)",
@@ -84,7 +85,7 @@ public extension RevoltREST {
     // TODO: Implement creating invite
     /// Create Invite
     ///
-    /// Creates an ivnite to this channel.
+    /// Creates an invite to this channel.
     /// Channel must be a `TextChannel`.
     ///
     /// `POST /channels/{target}/invites`
@@ -123,6 +124,10 @@ public extension RevoltREST {
     /// Lets the server and all other clients know that we've seen this message id in this channel.
     ///
     /// `PUT /channels/{target}/ack/{message}`
+    ///
+    /// - Parameters:
+    ///   - target: Target channel's ID
+    ///   - message: Message ID
     func acknowledgeMessage(_ target: String, _ message: String) async throws {
         try await putReq(
             path: "channels/\(target)/ack/\(message)"
@@ -209,9 +214,10 @@ public extension RevoltREST {
     ///
     /// `PUT /channels/{target}/messages/{message_id}/reactions/{emoji}`
     ///
-    /// - Parameter target: Channel ID
-    /// - Parameter message: Message ID
-    /// - Parameter emoji: Emoji ID
+    /// - Parameters:
+    ///   - target: Channel ID
+    ///   - message: Message ID
+    ///   - emoji: Emoji ID
     func addReaction(_ target: String, _ message: String, _ emoji: String) async throws {
         return try await putReq(
             path: "channels/\(target)/messages/\(message)/reactions/\(emoji)"
@@ -225,11 +231,12 @@ public extension RevoltREST {
     ///
     /// `DELETE /channels/{target}/messages/{message_id}/reactions/{emoji}`
     ///
-    /// - Parameter target: Channel ID
-    /// - Parameter message: Message ID
-    /// - Parameter emoji: Emoji ID
-    /// - Parameter user_id: Remove a specific user's reaction
-    /// - Parameter remove_all: Remove all reactions
+    /// - Parameters:
+    ///   - target: Channel ID
+    ///   - message: Message ID
+    ///   - emoji: Emoji ID
+    ///   - user_id: Remove a specific user's reaction
+    ///   - remove_all: Remove all reactions
     func removeReaction(
         _ target: String,
         _ message: String,
@@ -260,8 +267,9 @@ public extension RevoltREST {
     ///
     /// `DELETE /channels/{target}/messages/{message_id}/reactions`
     ///
-    /// - Parameter target: Channel ID
-    /// - Parameter message: Message ID
+    /// - Parameters:
+    ///   - target: Channel ID
+    ///   - message: Message ID
     func removeAllReactions(_ target: String, _ message: String) async throws {
         try await deleteReq(
             path: "channels/\(target)/messages/\(message)/reactions"
@@ -276,7 +284,8 @@ public extension RevoltREST {
     ///
     /// `GET /channels/{target}/members`
     ///
-    /// - Parameter target: Group ID
+    /// - Parameters:
+    ///   - target: Group ID
     func fetchGroupMembers(_ target: String) async throws -> [User] {
         return try await getReq(
             path: "channels/\(target)/members"
@@ -322,9 +331,10 @@ public extension RevoltREST {
     ///
     /// `PUT /channels/{target}/recipients/{member}`
     ///
-    /// - Parameter target: Group ID
-    /// - Parameter member: User ID
-    func addMemberToGroup(_ target: String, _ member: String) async throws {
+    /// - Parameters:
+    ///   - target: Group ID
+    ///   - member: User ID
+    func adddMemberToGroup(_ target: String, _ member: String) async throws {
         try await putReq(
             path: "channels/\(target)/recipients/\(member)"
         )
@@ -336,8 +346,9 @@ public extension RevoltREST {
     ///
     /// `DELETE /channels/{target}/recipients/{member}`
     ///
-    /// - Parameter target: Group ID
-    /// - Parameter member: User ID
+    /// - Parameters:
+    ///   - target: Group ID
+    ///   - member: User ID
     func removeMemberFromGroup(_ target: String, _ member: String) async throws {
         try await deleteReq(
             path: "channels/\(target)/recipients/\(member)"

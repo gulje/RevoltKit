@@ -8,6 +8,40 @@
 import Foundation
 
 public struct Bot: Identifiable, Codable, Equatable {
+    /**
+     Represents a bot within the Revolt.
+     */
+    
+    /// The unique identifier of the bot. This identifier is equal to associated bot user's ID.
+    public let id: String
+    
+    /// The user ID of the bot owner. This ID corresponds to the user who created and manges the bot.
+    public let owner: String
+    
+    /// The token used to authenticate requests for this bot.
+    public let token: String
+    
+    /// Indicates whether the bot is public and can be invited by anyone.
+    public let isPublic: Bool
+    
+    /// Indicates whether the analytics enabled for this bot.
+    public let analytics: Bool?
+    
+    /// Indicates whether this bot should be publicly discoverable.
+    public let isDiscoverable: Bool?
+    
+    /// The reserved URL for handling interactions with the bot.
+    public let interactionsURL: String?
+    
+    /// The URL for the terms of service associated with the bot. This URL provides information about the legal terms and conditions that apply to the bot's usage.
+    public let termsOfServiceURL: String?
+    
+    /// The URL for the privacy policy associated with the bot. This URL outlines the privacy practices and policies governing the bot's data handling and user interactions.
+    public let privacyPolicyURL: String?
+    
+    /// Additional flags associated with the bot.
+    public let flags: UInt32?
+    
     private enum CodingKeys: String, CodingKey {
         case id = "_id"
         case owner
@@ -20,34 +54,4 @@ public struct Bot: Identifiable, Codable, Equatable {
         case privacyPolicyURL  = "privacy_policy_url"
         case flags
     }
-    
-    /// Bot ID, This equals the associated bot user's id
-    public let id: String
-    
-    /// User ID of the bot owner
-    public let owner: String
-    
-    /// Token used to authenticate requests for this bot
-    public let token: String
-    
-    /// Whether the bot is public (may be invited by anyone)
-    public let isPublic: Bool
-    
-    /// Whether to enable analytics
-    public let analytics: Bool?
-    
-    /// Whether this bot should be publicly discoverable
-    public let isDiscoverable: Bool?
-    
-    /// Reserved; URL for handling interactions
-    public let interactionsURL: String?
-    
-    /// URL for terms of service
-    public let termsOfServiceURL: String?
-    
-    /// URL for privacy policy
-    public let privacyPolicyURL: String?
-    
-    /// Bot flags
-    public let flags: UInt32?
 }

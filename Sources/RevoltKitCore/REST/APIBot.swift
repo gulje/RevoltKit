@@ -14,7 +14,9 @@ public extension RevoltREST {
     ///
     /// `POST /bots/create`
     ///
-    /// - Parameter name: Bot username
+    /// - Parameters:
+    ///   - name: The username of the bot.
+    /// - Returns: The created bot instance.
     func createBot(_ name: String) async throws -> Bot {
         return try await postReq(
             path: "bots/create",
@@ -28,7 +30,9 @@ public extension RevoltREST {
     ///
     /// `GET /bots/{bot}/invite`
     ///
-    /// - Parameter bot: Bot ID
+    /// - Parameters:
+    ///   - bot: The ID of the bot.
+    /// - Returns: The fetched bot instance.
     func fetchPublicBot(_ bot: String) async throws -> Bot {
         return try await getReq(path: "bots/\(bot)/invite")
     }
@@ -39,8 +43,10 @@ public extension RevoltREST {
     ///
     /// `POST /bots/{bot}/invite`
     ///
-    /// - Parameter bot: Bot ID
-    /// - Parameter server: Server ID
+    /// - Parameters:
+    ///   - bot: The ID of the bot.
+    ///   - server: The ID of the server.
+    /// - Returns: The invited bot instance.
     func inviteBot(_ bot: String, server: String) async throws -> Bot {
         return try await postReq(
             path: "bots/\(bot)/invite",
@@ -54,8 +60,10 @@ public extension RevoltREST {
     ///
     /// `POST /bots/{bot}/invite`
     ///
-    /// - Parameter bot: Bot ID
-    /// - Parameter group: Group ID
+    /// - Parameters:
+    ///   - bot: The ID of the bot.
+    ///   - group: The ID of the group.
+    /// - Returns: The invited bot instance.
     func inviteBot(_ bot: String, group: String) async throws -> Bot {
         return try await postReq(
             path: "bots/\(bot)/invite",
@@ -69,7 +77,9 @@ public extension RevoltREST {
     ///
     /// `GET /bots/{bot}`
     ///
-    /// - Parameter bot: Bot ID
+    /// - Parameters:
+    ///   - bot: The ID of the bot.
+    /// - Returns: A tuple containing the bot instance and the user instance associated with the bot.
     func fetchBot(_ bot: String) async throws -> (Bot, User) {
         let response: FetchBotResponse = try await getReq(path: "bots/\(bot)")
         
@@ -81,6 +91,8 @@ public extension RevoltREST {
     /// Fetch all of the bots that you have control over.
     ///
     /// `GET /bots/@me`
+    ///
+    /// - Returns: A tuple containing an array of bot instances and an array of user instances associated with the bots.
     func fetchOwnedBots() async throws -> ([Bot], [User]) {
         let response: FetchBotsResponse = try await getReq(path: "/bots/@me")
         
@@ -93,7 +105,9 @@ public extension RevoltREST {
     ///
     /// `DELETE /bots/{bot}`
     ///
-    /// - Parameter bot: Bot ID
+    /// - Parameters:
+    ///   - bot: The ID of the bot.
+    /// - Throws: An error if the request fails.
     func deleteBot(_ bot: String) async throws {
         try await deleteReq(path: "/bots/\(bot)")
     }
@@ -103,6 +117,11 @@ public extension RevoltREST {
     /// Edit bot details by its ID.
     ///
     /// `PATCH /bots/{bot}`
+    ///
+    /// - Parameters:
+    ///   - bot: The ID of the bot.
+    ///   - body: The payload containing the updated bot details.
+    /// - Returns: The edited bot instance.
     func editBot<B: Encodable>(_ bot: String, body: B) async throws -> Bot {
         return try await patchReq(
             path: "/bots/\(bot)",
@@ -115,21 +134,30 @@ public extension RevoltREST {
     /// Edit bot details by its ID.
     ///
     /// `PATCH /bots/{bot}`
+    ///
+    /// - Parameters:
+    ///   - bot: The ID of the bot.
+    ///   - name: The new name for the bot (optional).
+    ///   - isPublic: The new visibility status for the bot (optional).
+    ///   - analytics: The new analytics status for the bot (optional).
+    ///   - interactionsURL: The new interactions URL for the bot (optional).
+    ///   - remove: The list of bot components to remove (optional).
+    /// - Returns: The edited bot instance.
     func editBot(
         _ bot: String,
         name: String?,
-        public: Bool?,
+        isPublic: Bool?,
         analytics: Bool?,
-        interactions_url: String?,
+        interactionsURL: String?,
         remove: [RemoveBotPayload]
     ) async throws -> Bot {
         return try await editBot(
             bot,
             body: EditBotPayload(
                 name: name,
-                public: `public`,
+                isPublic: isPublic,
                 analytics: analytics,
-                interactions_url: interactions_url,
+                interactionsURL: interactionsURL,
                 remove: remove
             )
         )
@@ -165,8 +193,16 @@ public enum RemoveBotPayload: String, Codable {
 
 public struct EditBotPayload: Codable {
     public let name: String?
-    public let `public`: Bool?
+    public let isPublic: Bool?
     public let analytics: Bool?
-    public let interactions_url: String?
+    public let interactionsURL: String?
     public let remove: [RemoveBotPayload]?
+    
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case isPublic = "public"
+        case analytics
+        case interactionsURL = "interactions_url"
+        case remove
+    }
 }

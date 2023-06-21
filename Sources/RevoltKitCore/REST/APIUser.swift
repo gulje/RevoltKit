@@ -21,7 +21,8 @@ public extension RevoltREST {
     ///
     /// `GET /users/{target}`
     ///
-    /// - Parameter target: ID of user
+    /// - Parameters:
+    ///   - target: ID of user
     func getUser(_ target: String) async throws -> User {
         return try await getReq(path: "users/\(target)")
     }
@@ -30,7 +31,8 @@ public extension RevoltREST {
     ///
     /// `PATCH /users/{target}`
     ///
-    /// - Parameter target: ID of user
+    /// - Parameters:
+    ///   - target: ID of user
     func editUser<B: Encodable>(_ target: String, _ body: B) async throws -> User {
         return try await patchReq(
             path: "users/\(target)",
@@ -69,7 +71,8 @@ public extension RevoltREST {
     ///
     /// `GET /users/{target}/flags`
     ///
-    /// - Parameter target: ID of user
+    /// - Parameters:
+    ///   - target: ID of user
     func getUserFlags(_ target: String) async throws -> Int32 {
         let response: GetUserFlagsResponse = try await getReq(path: "users/\(target)/flags")
         
@@ -80,7 +83,8 @@ public extension RevoltREST {
     ///
     /// `PATCH /users/@me/username`
     ///
-    /// - Parameter body: The data
+    /// - Parameters:
+    ///   - body: The data
     func changeUsername<B: Encodable>(_ body: B) async throws -> User {
         return try await patchReq(
             path: "users/@me/username",
@@ -92,8 +96,9 @@ public extension RevoltREST {
     ///
     /// `PATCH /users/@me/username`
     ///
-    /// - Parameter newUsername: New username
-    /// - Parameter password: Password
+    /// - Parameters:
+    ///   - newUsername: New username
+    ///   - password: Password
     func changeUsername(_ newUsername: String, _ password: String) async throws -> User {
         return try await changeUsername(
             ChangeUsernamePayload(
@@ -109,7 +114,8 @@ public extension RevoltREST {
     ///
     /// `GET /users/{target}/profile`
     ///
-    /// - Parameter target: ID of user
+    /// - Parameters:
+    ///   - target: ID of user
     func fetchProfile(_ target: String) async throws -> Profile {
         return try await getReq(
             path: "users/\(target)/profile"
@@ -150,7 +156,8 @@ public extension RevoltREST {
     ///
     /// `GET /users/{target}/mutual`
     ///
-    /// - Parameter target: ID of user
+    /// - Parameters:
+    ///   - target: ID of user
     func getMutualWith(_ target: String) async throws -> GetMutualWithResponse {
         return try await getReq(path: "users/\(target)/mutual")
     }
@@ -161,7 +168,8 @@ public extension RevoltREST {
     ///
     /// `PUT /users/{target}/friend`
     ///
-    /// - Parameter target: ID of user
+    /// - Parameters:
+    ///   - target: ID of user
     func acceptFriendRequest(_ target: String) async throws -> User {
         return try await putReq(
             path: "users/\(target)/friend"
@@ -174,7 +182,8 @@ public extension RevoltREST {
     ///
     /// `DELETE /users/{target}/friend`
     ///
-    /// - Parameter target: ID of user
+    /// - Parameters:
+    ///   - target: ID of user
     func denyFriendRequestOrRemoveFriend(_ target: String) async throws {
         try await deleteReq(
             path: "users/\(target)/friend"
@@ -187,7 +196,8 @@ public extension RevoltREST {
     ///
     /// `PUT /users/{target}/block`
     ///
-    /// - Parameter target: ID of user
+    /// - Parameters:
+    ///   - target: ID of user
     func blockUser(_ target: String) async throws -> User {
         return try await putReq(
             path: "users/\(target)/block"
@@ -200,7 +210,8 @@ public extension RevoltREST {
     ///
     /// `DELETE /users/{target}/block`
     ///
-    /// - Parameter target: ID of user
+    /// - Parameters:
+    ///   - target: ID of user
     func unblockUser(_ target: String) async throws {
         try await deleteReq(
             path: "users/\(target)/block"
@@ -213,7 +224,8 @@ public extension RevoltREST {
     ///
     /// `DELETE /users/{target}/block`
     ///
-    /// - Parameter target: Username and discriminator combo separated by #
+    /// - Parameters:
+    ///   - target: Username and discriminator combo separated by #
     func sendFriendRequest(_ target: String) async throws -> User {
         return try await postReq(
             path: "users/friend",

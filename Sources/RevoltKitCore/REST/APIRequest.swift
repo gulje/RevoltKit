@@ -30,7 +30,34 @@ public extension RevoltREST {
         case patch = "PATCH"
     }
     
-    /// Low level method for Revolt API requests
+    /**
+     This function is used to send requests to the Revolt API. It takes several parameters:
+     
+     - Parameters:
+       - path: The endpoint path of the API request.
+       - query: An optional array of URL query items.
+       - attachments: An optional array of URL attachments.
+       - body: The request body data, if applicable.
+       - method: The HTTP request method (default is .get).
+
+     The method performs the following steps:
+
+     1. Checks if the authentication token is not `nil`. If it is `nil`, an assertion failure is triggered.
+     2. Constructs the API URL by appending the provided `path` to the base URL.
+     3. Builds the request URL by adding the `query` items to the URL components.
+     4. Creates an instance of `URLRequest` using the request URL and sets the HTTP method.
+     5. Sets the appropriate session token header based on whether the client is a bot or a user.
+     6. If a request `body` is provided (`body` is not `nil`), sets it as the request's HTTP body.
+     7. Sends the request using the `RevoltREST.session.data(for:)` method, which performs the actual network request.
+     8. Checks the response received from the API. If the response is not a successful HTTP response (status code not in the 2xx range), an error is thrown.
+     9. If the response status code is 401 (Unauthorized), throws an `APIError.unauthorized` error.
+     10. If the response status code is not 401, attempts to decode the response data into a `RestError` object using the `RevoltREST.decoder`.
+     11. If there is an error during JSON decoding, throws an `InternalRestError.jsonDecodingError`.
+     12. Calls `handleError()` to handle specific errors based on the `RestError` object.
+     13. If none of the specific error cases match or an error occurs during error handling, throws an `InternalRestError.invalidResponse`.
+     
+     - Returns: The response data from the API as Data in an asynchronous manner.
+     */
     func makeRequest(
         path: String,
         query: [URLQueryItem] = [],
@@ -92,7 +119,7 @@ public extension RevoltREST {
         return data
     }
     
-    /// Make a `GET` request to the Revolt REST API
+    /// Perform a `GET` request to the specified `path`with specified `query` parameter in the Revolt REST API.
     func getReq<T: Decodable>(
         path: String,
         query: [URLQueryItem] = []
@@ -105,7 +132,7 @@ public extension RevoltREST {
         }
     }
     
-    /// Make a `POST` request to the Revolt REST API
+    /// Perform a `POST` request to the specified `path` with `attachments` and `body` in the Revolt REST API.
     func postReq<D: Decodable, B: Encodable>(
         path: String,
         body: B? = nil,
@@ -127,7 +154,7 @@ public extension RevoltREST {
         }
     }
     
-    /// Make a `PUT` request to the Revolt REST API
+    /// Perform a `PUT` request to the specified `path` with a request body of type `B` that conforms to the `Encodable` protocol.
     func putReq<B: Encodable, Response: Decodable>(
         path: String,
         body: B
@@ -146,7 +173,7 @@ public extension RevoltREST {
         }
     }
     
-    /// Make a `PUT` request to the Revolt REST API
+    /// Perform a `PUT` request to the specified `path` without a request body.
     func putReq<Response: Decodable>(path: String) async throws -> Response {
         let data = try await makeRequest(
             path: path,
@@ -160,16 +187,17 @@ public extension RevoltREST {
         }
     }
     
-    /// Make a `PUT` request to the Revolt REST API wthout Response
+    /// Perform a `PUT` request to the specified `path` without a request body and without expecting a response.
     func putReq(path: String) async throws {
         _ = try await makeRequest(path: path, method: .put)
     }
     
-    /// Make a `DELETE` request to the Revolt REST API
+    /// Perform a `DELETE` request to the specified path without any query parameters.
     func deleteReq(path: String) async throws {
         _ = try await makeRequest(path: path, method: .delete)
     }
     
+    /// Perform a `DELETE` request to the specified `path` with the given `query` parameters.
     func deleteReq(path: String, query: [URLQueryItem] = []) async throws {
         _ = try await makeRequest(path: path, query: query, method: .delete)
     }
@@ -194,6 +222,8 @@ public extension RevoltREST {
         }
     }
     
+    /// This function allows for specific handling of different types of errors returned by the Revolt API.
+    /// It translates the received `RestError` into custom error types (`APIError`) that can be caught and handled separately by the caller of the API request.
     func handleError(
         _ err: RestError
     ) throws {
