@@ -7,6 +7,10 @@
 
 import Foundation
 
+#if canImport(FoundationNetworking)
+  import FoundationNetworking
+#endif
+
 extension RevoltREST {
   public enum InternalRestError: Error {
     case invalidResponse
@@ -89,10 +93,10 @@ extension RevoltREST {
       req.httpBody = body
     }
 
-    guard let (data, response) = try? await RevoltREST.session.data(for: req),
+    guard let (data, response) = try? await RevoltREST.getData(request: req),
       let httpResponse = response as? HTTPURLResponse
     else {
-      throw InternalRestError.invalidResponse
+      throw RevoltREST.InternalRestError.invalidResponse
     }
 
     guard httpResponse.statusCode / 100 == 2 else {
