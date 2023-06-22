@@ -144,34 +144,37 @@ extension RevoltREST {
     before: String? = nil,
     after: String? = nil,
     sort: MessageSortDirection? = nil,
-    nearby: String? = nil
-  ) async throws -> [Message] {
-    return try await getReq(
-      path: "channels/\(target)/messages",
-      query: try buildQueryFromCodable(
-        FetchMessagesPayload(
-          limit: limit,
-          before: before,
-          after: after,
-          sort: sort,
-          nearby: nearby,
-          includeUsers: false
-        )
+    nearby: String? = nil,
+    includeUsers: Bool = false
+  ) async throws -> FetchMessagesResponse {
+    var query = try buildQueryFromCodable(
+      FetchMessagesPayload(
+        limit: limit,
+        before: before,
+        after: after,
+        sort: sort,
+        nearby: nearby,
+        includeUsers: nil
       )
     )
-  }
 
-  /// Fetch Messages
-  ///
-  /// Fetch multiple messages.
-  ///
-  /// `GET /channels/{target}/messages`
-  ///
-  /// - Parameters:
-  ///   - target: Channel ID
-  ///   - body: The options for fetching action
-  public func fetchMessagesWithUsers<B: Codable>(_ target: String, _ body: B) async throws {
-    throw RevoltKitErrors.notImplemented("Not implemented yet")
+    if includeUsers {
+      query.append(URLQueryItem(name: "include_users", value: "true"))
+
+      let response: FetchMessagesWithUsers = try await getReq(
+        path: "channels/\(target)/messages",
+        query: query
+      )
+
+      return .withUsers(response)
+    } else {
+      let response: [Message] = try await getReq(
+        path: "channels/\(target)/messages",
+        query: query
+      )
+
+      return .onlyMessages(response)
+    }
   }
 
   // TODO: Implement messages
@@ -332,26 +335,15 @@ extension RevoltREST {
   /// Create a new group channel.
   ///
   /// `POST /channels/create`
-  public func createGroup<B: Encodable>(_ body: B) async throws -> Channel {
-    return try await postReq(
-      path: "channels/create",
-      body: body
-    )
-  }
-
-  /// Create Group
-  ///
-  /// Create a new group channel.
-  ///
-  /// `POST /channels/create`
   public func createGroup(
     _ name: String,
-    _ description: String? = nil,
-    _ users: [String],
-    _ nsfw: Bool? = nil
+    users: [String],
+    description: String? = nil,
+    nsfw: Bool? = nil
   ) async throws -> Channel {
-    return try await createGroup(
-      CreateGroupPayload(
+    return try await postReq(
+      path: "channels/create",
+      body: CreateGroupPayload(
         name: name,
         description: description,
         users: users,
@@ -470,4 +462,20 @@ public enum MessageSortDirection: String, Codable {
   case relevance = "Relevance"
   case latest = "Latest"
   case oldest = "Oldest"
+}
+
+public enum FetchMessagesResponse: Codable {
+  case onlyMessages([Message])
+  case withUsers(FetchMessagesWithUsers)
+}
+
+public struct FetchMessagesWithUsers: Codable {
+  /// List of messages
+  public let messages: [Message]
+
+  /// List of users
+  public let users: [User]
+
+  /// List of members
+  public let members: [Member]?
 }
