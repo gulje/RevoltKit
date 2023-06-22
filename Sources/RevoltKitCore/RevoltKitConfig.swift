@@ -16,14 +16,14 @@ import Foundation
 /// To provide custom config, just make changes on the `default` property.
 public struct RevoltKitConfig {
   /// The base URL for the Revolt API. It represents the main server endpoint for making API requests.
-  public let baseURL: URL
+  public var baseURL: URL
 
   /// The URL for the Revolt Content Delivery Network (CDN). It is used for fetching and serving media content.
   public var cdnURL: URL
 
   /// The base URL for the Revolt REST API.
   /// It is derived from the `baseURL`` property and represents the endpoint for making REST API requests.
-  public let restBase: URL
+  public var restBase: URL
 
   /// The URL for the Revolt WebSocket gateway. It is used for real-time communication with the Revolt server.
   public var gatewayURL: URL
@@ -61,7 +61,7 @@ public struct RevoltKitConfig {
   /// Discovers the appropriate URLs from the Revolt REST API and updates the URL configurations in RevoltKit.
   ///
   /// This function makes a fetch API request to the provided `baseURL`, retrieves the necessary URLs,
-  /// and overrides the existing URL configurations (`cdnURL`, `gatewayURL`) in the `RevoltKitConfig.default` with the fetched values.
+  /// and overrides the existing URL configurations (`baseURL`, `cdnURL`, `gatewayURL`) in the `RevoltKitConfig.default` with the fetched values.
   ///
   /// Example usage:
   /// ```
@@ -72,11 +72,12 @@ public struct RevoltKitConfig {
   ///   print(RevoltKitConfig.default.isBot) //=> false
   /// ```
   public static func discover(_ baseURL: String = "revolt.chat") async throws {
-    let restBase = URL(string: "https://\(baseURL)/")!.appendingPathComponent("api")
+    self.default.baseURL = URL(string: "https://\(baseURL)")!
+    self.default.restBase = self.default.baseURL.appendingPathComponent("api")
 
     RevoltREST.log.trace("Fetching server configuration.")
-
-    var req = URLRequest(url: restBase)
+  
+    var req = URLRequest(url: self.default.restBase)
     req.httpMethod = "GET"
 
     guard let (data, _) = try? await RevoltREST.getData(request: req)
