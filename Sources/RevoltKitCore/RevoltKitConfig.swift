@@ -35,18 +35,12 @@ public struct RevoltKitConfig {
   /// By default, it is set to true.
   public var isBot: Bool
 
-  /**
-  - Parameters:
-    - baseURL: The base URL for the Revolt API. Defaults to "revolt.chat".
-    - cdnURL: The URL for the Revolt CDN. Defaults to "autumn.revolt.chat".
-    - gatewayURL: The URL for the Revolt WebSocket gateway. Defaults to "ws.revolt.chat".
-    - version: The version number of the Revolt API to be used. Defaults to 1.
-    - isBot: A boolean flag indicating whether the client is a bot or not. Defaults to `true`.
-    - discoverURLs: A boolean flag determines whether RevoltKit should automatically discover the
-    appropriate URLs from the Revolt REST API. When this flag is set to `true`, RevoltKit will make
-    a fetch API request to the provided `baseURL`, retrieve all the necessary URLs and override the
-    existing URL parameters (`cdnURL`, `gatewayURL`) with the fetched values.
-   */
+  /// - Parameters:
+  ///   - baseURL: The base URL for the Revolt API. Defaults to "revolt.chat".
+  ///   - cdnURL: The URL for the Revolt CDN. Defaults to "autumn.revolt.chat".
+  ///   - gatewayURL: The URL for the Revolt WebSocket gateway. Defaults to "ws.revolt.chat".
+  ///   - version: The version number of the Revolt API to be used. Defaults to 1.
+  ///   - isBot: A boolean flag indicating whether the client is a bot or not. Defaults to `true`.
   public init(
     baseURL: String = "revolt.chat",
     cdnURL: String = "https://autumn.revolt.chat",
@@ -64,21 +58,19 @@ public struct RevoltKitConfig {
 
   public static var `default`: Self = Self()
 
-  /**
-    Discovers the appropriate URLs from the Revolt REST API and updates the URL configurations in RevoltKit.
-
-    This function makes a fetch API request to the provided `baseURL`, retrieves the necessary URLs,
-    and overrides the existing URL configurations (`cdnURL`, `gatewayURL`) in the `RevoltKitConfig.default` with the fetched values.
-
-    Example usage:
-    ```
-      RevoltKitConfig.default.isBot = false
-      try await RevoltKitConfig.discover("my-awesome-instance.love")
-
-      // The URLs are updated now
-      print(RevoltKitConfig.default.isBot) //=> false
-    ```
-    */
+  /// Discovers the appropriate URLs from the Revolt REST API and updates the URL configurations in RevoltKit.
+  ///
+  /// This function makes a fetch API request to the provided `baseURL`, retrieves the necessary URLs,
+  /// and overrides the existing URL configurations (`cdnURL`, `gatewayURL`) in the `RevoltKitConfig.default` with the fetched values.
+  ///
+  /// Example usage:
+  /// ```
+  ///   RevoltKitConfig.default.isBot = false
+  ///   try await RevoltKitConfig.discover("my-awesome-instance.love")
+  ///
+  ///   // The URLs are updated now
+  ///   print(RevoltKitConfig.default.isBot) //=> false
+  /// ```
   public static func discover(_ baseURL: String = "revolt.chat") async throws {
     let restBase = URL(string: "https://\(baseURL)/")!.appendingPathComponent("api")
 
@@ -127,21 +119,38 @@ public struct RevoltKitConfig {
 
       public let email: Bool
 
-      public let invite_only: Bool
+      public let inviteOnly: Bool
 
       public let autumn: GenericServiceConfiguration
 
       public let january: GenericServiceConfiguration
 
       public let voso: VoiceServerConfiguration
+
+      private enum CodingKeys: String, CodingKey {
+        case captcha
+        case email
+        case inviteOnly = "invite_only"
+        case autumn
+        case january
+        case voso
+      }
     }
 
     public struct BuildInformation: Codable {
-      public let commit_sha: String
-      public let commit_timestamp: String
+      public let commitSHA: String
+      public let commitTimestamp: String
       public let semver: String
-      public let origin_url: String
+      public let originURL: String
       public let timestamp: String
+
+      private enum CodingKeys: String, CodingKey {
+        case commitSHA = "commit_sha"
+        case commitTimestamp = "commit_timestamp"
+        case semver
+        case originURL = "origin_url"
+        case timestamp
+      }
     }
 
     public let revolt: String
