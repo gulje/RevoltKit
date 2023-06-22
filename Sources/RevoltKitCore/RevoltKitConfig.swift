@@ -61,7 +61,7 @@ public struct RevoltKitConfig {
   /// Discovers the appropriate URLs from the Revolt REST API and updates the URL configurations in RevoltKit.
   ///
   /// This function makes a fetch API request to the provided `baseURL`, retrieves the necessary URLs,
-  /// and overrides the existing URL configurations (`cdnURL`, `gatewayURL`) in the `RevoltKitConfig.default` with the fetched values.
+  /// and overrides the existing URL configurations (`baseURL`, `cdnURL`, `gatewayURL`) in the `RevoltKitConfig.default` with the fetched values.
   ///
   /// Example usage:
   /// ```
