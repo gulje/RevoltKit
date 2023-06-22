@@ -7,6 +7,10 @@
 
 import Foundation
 
+#if canImport(FoundationNetworking)
+  import FoundationNetworking
+#endif
+
 /// It is a configuration object used in the RevoltKit.
 /// It provides various properties to configure the Revolt API endpoints and settings.
 /// To provide custom config, just make changes on the `default` property.
@@ -83,8 +87,7 @@ public struct RevoltKitConfig {
     var req = URLRequest(url: restBase)
     req.httpMethod = "GET"
 
-    guard let (data, response) = try? await RevoltREST.session.data(for: req),
-      let _ = response as? HTTPURLResponse
+    guard let (data, _) = try? await RevoltREST.getData(request: req)
     else {
       throw RevoltREST.InternalRestError.invalidResponse
     }

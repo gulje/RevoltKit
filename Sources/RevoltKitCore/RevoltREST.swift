@@ -8,6 +8,10 @@
 import Foundation
 import Logging
 
+#if canImport(FoundationNetworking)
+  import FoundationNetworking
+#endif
+
 public enum RevoltKitErrors: Error {
   case notImplemented(String)
 }
