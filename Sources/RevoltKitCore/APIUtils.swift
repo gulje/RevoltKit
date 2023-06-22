@@ -1,14 +1,14 @@
 //
 //  APIUtils.swift
-//  
+//
 //
 //  Created by gulje on 19.06.2023.
 //
 
 import Foundation
 
-public extension RevoltREST {
-    static let encoder = JSONEncoder()
-    
-    static let decoder = JSONDecoder()
+extension RevoltREST {
+  public static let encoder = JSONEncoder()
+
+  public static let decoder = JSONDecoder()
 }
