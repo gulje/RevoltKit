@@ -39,10 +39,10 @@ extension RevoltREST {
   /// - Parameters:
   ///   - target: ID of the channel
   ///   - leave_silently: Whether to not send a leave message
-  public func closeChannel(_ target: String, leave_silently: Bool = false) async throws {
+  public func closeChannel(_ target: String, leaveSilently: Bool = false) async throws {
     return try await deleteReq(
       path: "channels/\(target)",
-      query: leave_silently ? [URLQueryItem(name: "leave_silently", value: "true")] : []
+      query: leaveSilently ? [URLQueryItem(name: "leave_silently", value: "true")] : []
     )
   }
 
@@ -50,21 +50,9 @@ extension RevoltREST {
   ///
   /// Edit a channel by its ID.
   ///
-  /// `PATCH /channels/{target}`
-  public func editChannel<B: Encodable>(_ target: String, _ body: B) async throws -> Channel {
-    return try await patchReq(
-      path: "channels/\(target)",
-      body: body
-    )
-  }
-
-  /// Edit Channel
-  ///
-  /// Edit a channel by its ID.
-  ///
-  /// `PATCH /channels/{target}`
+  /// `PATCH /channels/{channel}`
   public func editChannel(
-    _ target: String,
+    _ channel: String,
     name: String? = nil,
     description: String? = nil,
     owner: String? = nil,
@@ -73,9 +61,9 @@ extension RevoltREST {
     archived: Bool? = nil,
     remove: [EditChannelRemove]? = []
   ) async throws -> Channel {
-    return try await editChannel(
-      target,
-      EditChannelPayload(
+    return try await patchReq(
+      path: "channels/\(channel)",
+      body: EditChannelPayload(
         name: name,
         description: description,
         owner: owner,
@@ -150,28 +138,6 @@ extension RevoltREST {
   /// - Parameters:
   ///   - target: Channel ID
   ///   - body: The options for fetching action
-  public func fetchMessages<B: Codable>(_ target: String, _ body: B) async throws -> [Message] {
-    var query = try buildQueryFromCodable(body)
-
-    if (query.map { $0.name }).contains("include_users") {
-      query.append(URLQueryItem(name: "include_users", value: "false"))
-    }
-
-    return try await getReq(
-      path: "channels/\(target)/messages",
-      query: query
-    )
-  }
-
-  /// Fetch Messages
-  ///
-  /// Fetch multiple messages.
-  ///
-  /// `GET /channels/{target}/messages`
-  ///
-  /// - Parameters:
-  ///   - target: Channel ID
-  ///   - body: The options for fetching action
   public func fetchMessages(
     _ target: String,
     limit: Int64? = nil,
@@ -180,15 +146,17 @@ extension RevoltREST {
     sort: MessageSortDirection? = nil,
     nearby: String? = nil
   ) async throws -> [Message] {
-    return try await fetchMessages(
-      target,
-      FetchMessagesPayload(
-        limit: limit,
-        before: before,
-        after: after,
-        sort: sort,
-        nearby: nearby,
-        includeUsers: false
+    return try await getReq(
+      path: "channels/\(target)/messages",
+      query: try buildQueryFromCodable(
+        FetchMessagesPayload(
+          limit: limit,
+          before: before,
+          after: after,
+          sort: sort,
+          nearby: nearby,
+          includeUsers: false
+        )
       )
     )
   }
@@ -302,22 +270,22 @@ extension RevoltREST {
   ///   - target: Channel ID
   ///   - message: Message ID
   ///   - emoji: Emoji ID
-  ///   - user_id: Remove a specific user's reaction
+  ///   - user: Remove a specific user's reaction
   ///   - remove_all: Remove all reactions
   public func removeReaction(
     _ target: String,
     _ message: String,
     _ emoji: String,
-    user_id: String? = nil,
-    remove_all: Bool? = nil
+    user: String? = nil,
+    removeAll: Bool? = nil
   ) async throws {
     var query: [URLQueryItem] = []
 
-    if user_id != nil {
-      query.append(URLQueryItem(name: "user_id", value: user_id))
+    if user != nil && !(user!.isEmpty) {
+      query.append(URLQueryItem(name: "user_id", value: user))
     }
 
-    if remove_all != nil {
+    if removeAll != nil && removeAll! {
       query.append(URLQueryItem(name: "remove_all", value: "true"))
     }
 
@@ -424,9 +392,9 @@ extension RevoltREST {
 }
 
 public enum EditChannelRemove: String, Codable {
-  case Description
-  case Icon
-  case DefaultPermissions
+  case description = "Description"
+  case icon = "Icon"
+  case defaultPermissions = "DefaultPermissions"
 }
 
 public struct EditChannelPayload: Codable {
@@ -499,7 +467,7 @@ public struct FetchMessagesPayload: Codable {
 }
 
 public enum MessageSortDirection: String, Codable {
-  case Relevance
-  case Latest
-  case Oldest
+  case relevance = "Relevance"
+  case latest = "Latest"
+  case oldest = "Oldest"
 }

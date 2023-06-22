@@ -93,7 +93,7 @@ extension RevoltREST {
   /// `GET /bots/@me`
   ///
   /// - Returns: A tuple containing an array of bot instances and an array of user instances associated with the bots.
-  public func fetchOwnedBots() async throws -> ([Bot], [User]) {
+  public func fetchOwnedBots() async throws -> (bots: [Bot], users: [User]) {
     let response: FetchBotsResponse = try await getReq(path: "/bots/@me")
 
     return (response.bots, response.users)
@@ -120,23 +120,6 @@ extension RevoltREST {
   ///
   /// - Parameters:
   ///   - bot: The ID of the bot.
-  ///   - body: The payload containing the updated bot details.
-  /// - Returns: The edited bot instance.
-  public func editBot<B: Encodable>(_ bot: String, body: B) async throws -> Bot {
-    return try await patchReq(
-      path: "/bots/\(bot)",
-      body: body
-    )
-  }
-
-  /// Edit Bot
-  ///
-  /// Edit bot details by its ID.
-  ///
-  /// `PATCH /bots/{bot}`
-  ///
-  /// - Parameters:
-  ///   - bot: The ID of the bot.
   ///   - name: The new name for the bot (optional).
   ///   - isPublic: The new visibility status for the bot (optional).
   ///   - analytics: The new analytics status for the bot (optional).
@@ -151,8 +134,8 @@ extension RevoltREST {
     interactionsURL: String?,
     remove: [RemoveBotPayload]
   ) async throws -> Bot {
-    return try await editBot(
-      bot,
+    return try await patchReq(
+      path: "bots/\(bot)",
       body: EditBotPayload(
         name: name,
         isPublic: isPublic,
@@ -164,34 +147,34 @@ extension RevoltREST {
   }
 }
 
-public struct FetchBotResponse: Codable {
+struct FetchBotResponse: Codable {
   public let bot: Bot
   public let user: User
 }
 
-public struct FetchBotsResponse: Codable {
+struct FetchBotsResponse: Codable {
   public let bots: [Bot]
   public let users: [User]
 }
 
-public struct CreateBotPayload: Codable {
+struct CreateBotPayload: Codable {
   public let name: String
 }
 
-public struct InviteBotServerPayload: Codable {
+struct InviteBotServerPayload: Codable {
   public let server: String
 }
 
-public struct InviteBotGroupPayload: Codable {
+struct InviteBotGroupPayload: Codable {
   public let group: String
 }
 
 public enum RemoveBotPayload: String, Codable {
-  case Token
-  case InteractionsURL
+  case token = "Token"
+  case interactionsURL = "InteractionsURL"
 }
 
-public struct EditBotPayload: Codable {
+struct EditBotPayload: Codable {
   public let name: String?
   public let isPublic: Bool?
   public let analytics: Bool?

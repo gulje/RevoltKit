@@ -13,6 +13,8 @@ extension RevoltREST {
   /// Fetch Self
   ///
   /// `GET /users/@me`
+  ///
+  /// - Returns: Current user
   public func getCurrentUser() async throws -> User {
     return try await getReq(path: "users/@me")
   }
@@ -23,40 +25,41 @@ extension RevoltREST {
   ///
   /// - Parameters:
   ///   - target: ID of user
+  ///
+  /// - Returns: Fetched user
   public func getUser(_ target: String) async throws -> User {
     return try await getReq(path: "users/\(target)")
   }
 
   /// Edit (Currently Authenticated) User
   ///
-  /// `PATCH /users/{target}`
+  /// `PATCH /users/{user}`
   ///
   /// - Parameters:
-  ///   - target: ID of user
-  public func editUser<B: Encodable>(_ target: String, _ body: B) async throws -> User {
-    return try await patchReq(
-      path: "users/\(target)",
-      body: body
-    )
-  }
-
-  /// Edit (Currently Authenticated) User
+  ///   - user: The identifier of the user to be edited.
+  ///   - displayName: The new display name for the user. Optional.
+  ///   - avatar: The new avatar URL for the user. Optional.
+  ///   - status: The new status for the user. Optional.
+  ///   - profile: The new profile information for the user. Optional.
+  ///   - badges: The new badge count for the user. Optional.
+  ///   - flags: The new flag count for the user. Optional.
+  ///   - remove: An array of items to be removed from the user's profile. Optional.
   ///
-  /// `PATCH /users/{target}`
+  /// - Returns: A `User` object representing the updated user profile.
   public func editUser(
-    target: String,
-    display_name: String?,
-    avatar: String?,
-    status: Status?,
-    profile: Profile?,
-    badges: Int32?,
-    flags: Int32?,
-    remove: [RemovePayload]?
+    _ user: String,
+    displayName: String? = nil,
+    avatar: String? = nil,
+    status: Status? = nil,
+    profile: Profile? = nil,
+    badges: Int32? = nil,
+    flags: Int32? = nil,
+    remove: [RemovePayload]? = nil
   ) async throws -> User {
-    return try await editUser(
-      target,
-      EditUserPayload(
-        display_name: display_name,
+    return try await patchReq(
+      path: "users/\(user)",
+      body: EditUserPayload(
+        displayName: displayName,
         avatar: avatar,
         status: status,
         profile: profile,
@@ -84,27 +87,12 @@ extension RevoltREST {
   /// `PATCH /users/@me/username`
   ///
   /// - Parameters:
-  ///   - body: The data
-  public func changeUsername<B: Encodable>(_ body: B) async throws -> User {
-    return try await patchReq(
-      path: "users/@me/username",
-      body: body
-    )
-  }
-
-  /// Change Username
-  ///
-  /// `PATCH /users/@me/username`
-  ///
-  /// - Parameters:
   ///   - newUsername: New username
   ///   - password: Password
   public func changeUsername(_ newUsername: String, _ password: String) async throws -> User {
-    return try await changeUsername(
-      ChangeUsernamePayload(
-        username: newUsername,
-        password: password
-      )
+    return try await patchReq(
+      path: "users/@me/username",
+      body: ChangeUsernamePayload(username: newUsername, password: password)
     )
   }
 
@@ -244,22 +232,32 @@ public struct GetMutualWithResponse: Codable {
 }
 
 public enum RemovePayload: String, Codable {
-  case Avatar
-  case StatusText
-  case StatusPresence
-  case ProfileContent
-  case ProfileBackground
-  case DisplayName
+  case avatar = "Avatar"
+  case statusText = "StatusText"
+  case statusPresence = "StatusPresence"
+  case profileContent = "ProfileContent"
+  case profileBackground = "ProfileBackground"
+  case displayName = "DisplayName"
 }
 
-public struct EditUserPayload: Codable {
-  public let display_name: String?
+struct EditUserPayload: Codable {
+  public let displayName: String?
   public let avatar: String?
   public let status: Status?
   public let profile: Profile?
   public let badges: Int32?
   public let flags: Int32?
   public let remove: [RemovePayload]?
+
+  private enum CodingKeys: String, CodingKey {
+    case displayName = "display_name"
+    case avatar
+    case status
+    case profile
+    case badges
+    case flags
+    case remove
+  }
 }
 
 public struct ChangeUsernamePayload: Codable {

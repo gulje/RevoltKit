@@ -4,30 +4,30 @@
 import PackageDescription
 
 let package = Package(
-    name: "RevoltKit",
-    platforms: [
-        .macOS(.v11)
-    ],
-    products: [
-        .library(
-            name: "RevoltKit",
-            targets: ["RevoltKit"]),
-        .library(
-            name: "RevoltKitCore",
-            targets: ["RevoltKitCore"]),
-    ],
-    dependencies: [
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
-    ],
-    targets: [
-        .target(
-            name: "RevoltKit",
-            dependencies: [
-                .target(name: "RevoltKitCore"),
-                .product(name: "Logging", package: "swift-log"),
-            ]
-        ),
-        .target(
-            name: "RevoltKitCore"),
-    ]
+  name: "RevoltKit",
+  platforms: [
+    .macOS(.v11)
+  ],
+  products: [
+    .library(
+      name: "RevoltKit",
+      targets: ["RevoltKit"]),
+    .library(
+      name: "RevoltKitCore",
+      targets: ["RevoltKitCore"]),
+  ],
+  dependencies: [
+    .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0")
+  ],
+  targets: [
+    .target(
+      name: "RevoltKit",
+      dependencies: [
+        .target(name: "RevoltKitCore"),
+        .product(name: "Logging", package: "swift-log"),
+      ]
+    ),
+    .target(
+      name: "RevoltKitCore"),
+  ]
 )

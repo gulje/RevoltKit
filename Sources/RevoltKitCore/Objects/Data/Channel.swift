@@ -8,11 +8,11 @@
 import Foundation
 
 public enum ChannelType: String, Codable {
-  case SavedMessages
-  case DirectMessage
-  case Group
-  case TextChannel
-  case VoiceChannel
+  case savedMessages = "SavedMessages"
+  case directMessage = "DirectMessage"
+  case group = "Group"
+  case textChannel = "TextChannel"
+  case voiceChannel = "VoiceChannel"
 }
 
 public struct PermissionTable: Codable {

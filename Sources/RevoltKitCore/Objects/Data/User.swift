@@ -8,21 +8,21 @@
 import Foundation
 
 public enum Presence: String, Codable {
-  case Online
-  case Idle
-  case Focus
-  case Busy
-  case Invisible
+  case online = "Online"
+  case idle = "Idle"
+  case focus = "Focus"
+  case busy = "Busy"
+  case invisible = "Invisible"
 }
 
 public enum Relationship: String, Codable {
-  case None
-  case User
-  case Friend
-  case Outgoing
-  case Incoming
-  case Blocked
-  case BlockedOther
+  case none = "None"
+  case user = "User"
+  case friend = "Friend"
+  case outgoing = "Outgoing"
+  case incoming = "Incoming"
+  case blocked = "Blocked"
+  case blockedOther = "BlockedOther"
 }
 
 public struct Profile: Codable {

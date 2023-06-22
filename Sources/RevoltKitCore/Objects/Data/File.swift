@@ -9,11 +9,11 @@ import Foundation
 
 /// Represents the type of metadata associated with a file.
 public enum MetadataType: String, Codable {
-  case File
-  case Text
-  case Image
-  case Video
-  case Audio
+  case file = "File"
+  case text = "Text"
+  case image = "Image"
+  case video = "Video"
+  case audio = "Audio"
 }
 
 /// Represents metadata associated with a file.

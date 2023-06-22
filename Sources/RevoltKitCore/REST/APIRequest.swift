@@ -30,34 +30,32 @@ extension RevoltREST {
     case patch = "PATCH"
   }
 
-  /**
-     This function is used to send requests to the Revolt API. It takes several parameters:
-
-     - Parameters:
-       - path: The endpoint path of the API request.
-       - query: An optional array of URL query items.
-       - attachments: An optional array of URL attachments.
-       - body: The request body data, if applicable.
-       - method: The HTTP request method (default is .get).
-
-     The method performs the following steps:
-
-     1. Checks if the authentication token is not `nil`. If it is `nil`, an assertion failure is triggered.
-     2. Constructs the API URL by appending the provided `path` to the base URL.
-     3. Builds the request URL by adding the `query` items to the URL components.
-     4. Creates an instance of `URLRequest` using the request URL and sets the HTTP method.
-     5. Sets the appropriate session token header based on whether the client is a bot or a user.
-     6. If a request `body` is provided (`body` is not `nil`), sets it as the request's HTTP body.
-     7. Sends the request using the `RevoltREST.session.data(for:)` method, which performs the actual network request.
-     8. Checks the response received from the API. If the response is not a successful HTTP response (status code not in the 2xx range), an error is thrown.
-     9. If the response status code is 401 (Unauthorized), throws an `APIError.unauthorized` error.
-     10. If the response status code is not 401, attempts to decode the response data into a `RestError` object using the `RevoltREST.decoder`.
-     11. If there is an error during JSON decoding, throws an `InternalRestError.jsonDecodingError`.
-     12. Calls `handleError()` to handle specific errors based on the `RestError` object.
-     13. If none of the specific error cases match or an error occurs during error handling, throws an `InternalRestError.invalidResponse`.
-
-     - Returns: The response data from the API as Data in an asynchronous manner.
-     */
+  /// This function is used to send requests to the Revolt API. It takes several parameters:
+  ///
+  /// - Parameters:
+  ///   - path: The endpoint path of the API request.
+  ///   - query: An optional array of URL query items.
+  ///   - attachments: An optional array of URL attachments.
+  ///   - body: The request body data, if applicable.
+  ///   - method: The HTTP request method (default is .get).
+  ///
+  /// The method performs the following steps:
+  ///
+  /// 1. Checks if the authentication token is not `nil`. If it is `nil`, an assertion failure is triggered.
+  /// 2. Constructs the API URL by appending the provided `path` to the base URL.
+  /// 3. Builds the request URL by adding the `query` items to the URL components.
+  /// 4. Creates an instance of `URLRequest` using the request URL and sets the HTTP method.
+  /// 5. Sets the appropriate session token header based on whether the client is a bot or a user.
+  /// 6. If a request `body` is provided (`body` is not `nil`), sets it as the request's HTTP body.
+  /// 7. Sends the request using the `RevoltREST.session.data(for:)` method, which performs the actual network request.
+  /// 8. Checks the response received from the API. If the response is not a successful HTTP response (status code not in the 2xx range), an error is thrown.
+  /// 9. If the response status code is 401 (Unauthorized), throws an `APIError.unauthorized` error.
+  /// 10. If the response status code is not 401, attempts to decode the response data into a `RestError` object using the `RevoltREST.decoder`.
+  /// 11. If there is an error during JSON decoding, throws an `InternalRestError.jsonDecodingError`.
+  /// 12. Calls `handleError()` to handle specific errors based on the `RestError` object.
+  /// 13. If none of the specific error cases match or an error occurs during error handling, throws an `InternalRestError.invalidResponse`.
+  ///
+  /// - Returns: The response data from the API as Data in an asynchronous manner.
   public func makeRequest(
     path: String,
     query: [URLQueryItem] = [],
@@ -257,38 +255,38 @@ public struct RestError: Codable {
 }
 
 public enum Permission: String, Codable {
-  case ManageChannel
-  case ManageServer
-  case ManagePermissions
-  case ManageRole
-  case ManageCustomisation
-  case KickMembers
-  case BanMembers
-  case TimeoutMembers
-  case AssignRoles
-  case ChangeNickname
-  case ManageNicknames
-  case ChangeAvatar
-  case RemoveAvatars
-  case ViewChannel
-  case ReadMessageHistory
-  case SendMessage
-  case ManageMessages
-  case ManageWebhooks
-  case InviteOthers
-  case SendEmbeds
-  case UploadFiles
-  case Masquerade
-  case React
-  case Connect
-  case Speak
-  case Video
-  case MuteMembers
-  case DeafenMembers
-  case MoveMembers
-  case GrantAllSafe
-  case GrantAll
-  case Access
-  case ViewProfile
-  case Invite
+  case manageChannel = "ManageChannel"
+  case manageServer = "ManageServer"
+  case managePermissions = "ManagePermissions"
+  case manageRole = "ManageRole"
+  case manageCustomisation = "ManageCustomisation"
+  case kickMembers = "KickMembers"
+  case banMembers = "BanMembers"
+  case timeoutMembers = "TimeoutMembers"
+  case assignRoles = "AssignRoles"
+  case changeNickname = "ChangeNickname"
+  case manageNicknames = "ManageNicknames"
+  case changeAvatar = "ChangeAvatar"
+  case removeAvatars = "RemoveAvatars"
+  case viewChannel = "ViewChannel"
+  case readMessageHistory = "ReadMessageHistory"
+  case sendMessage = "SendMessage"
+  case manageMessages = "ManageMessages"
+  case manageWebhooks = "ManageWebhooks"
+  case inviteOthers = "InviteOthers"
+  case sendEmbeds = "SendEmbeds"
+  case uploadFiles = "UploadFiles"
+  case masquerade = "Masquerade"
+  case react = "React"
+  case connect = "Connect"
+  case speak = "Speak"
+  case video = "Video"
+  case muteMembers = "MuteMembers"
+  case deafenMembers = "DeafenMembers"
+  case moveMembers = "MoveMembers"
+  case grantAllSafe = "GrantAllSafe"
+  case grantAll = "GrantAll"
+  case access = "Access"
+  case viewProfile = "ViewProfile"
+  case invite = "Invite"
 }

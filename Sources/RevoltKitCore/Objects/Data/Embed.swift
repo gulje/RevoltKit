@@ -75,11 +75,11 @@ public struct Embed: Codable {
 
 /// The type of an embedded content.
 public enum EmbedType: String, Codable {
-  case Website
-  case Image
-  case Video
-  case Text
-  case None
+  case website = "Website"
+  case image = "Image"
+  case video = "Video"
+  case text = "Text"
+  case none = "None"
 }
 
 public struct EmbeddedVideo: Codable {
@@ -117,22 +117,12 @@ public struct EmbeddedImage: Codable {
 
 /// The size type of an embedded image.
 public enum EmbeddedImageSizeType: String, Codable {
-  case Large
-  case Preview
+  case large = "Large"
+  case preview = "Preview"
 }
 
+/// Represents special remote content associated with an embedded object.
 public struct SpecialRemoteContent: Codable {
-  /**
-     Represents special remote content associated with an embedded object.
-     */
-
-  private enum CodingKeys: String, CodingKey {
-    case type
-    case id
-    case timestamp
-    case contentType = "content_type"
-  }
-
   /// The type of special remote content.
   public let type: SpecialRemoteContentType
 
@@ -144,6 +134,13 @@ public struct SpecialRemoteContent: Codable {
 
   /// The content type of the special remote content. This field is present in special remote content of types `Lightspeed`, `Bandcamp`, `Spotify`, and `Twitch`.
   public let contentType: SpecialRemoteContentTypes?
+
+  private enum CodingKeys: String, CodingKey {
+    case type
+    case id
+    case timestamp
+    case contentType = "content_type"
+  }
 }
 
 public enum SpecialRemoteContentTypes: Codable {
@@ -175,23 +172,21 @@ public enum SpecialRemoteContentTypes: Codable {
 
 public enum SpecialRemoteContentTypeEnum: String, Codable {
   /// The content type for special remote content of type `Twitch`.
-  case Video
-  case Clip
+  case video = "Video"
+  case clip = "Clip"
 
   /// The content type for special remote content of type `Bandcamp`.
-  case Album
-  case Track
+  case album = "Album"
+  case track = "Track"
 
   /// The content type for special remote content of types `Lightspeed` and `Twitch`.
-  case Channel
+  case channel = "Channel"
 }
 
+// swift-format-ignore: AlwaysUseLowerCamelCase
+/// Represents the type of special remote content.
 public enum SpecialRemoteContentType: String, Codable {
-  /**
-     Represents the type of special remote content.
-     */
-
-  case None
+  case None = "None"
   case GIF
   case YouTube
   case Lightspeed
