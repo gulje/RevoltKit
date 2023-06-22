@@ -129,15 +129,19 @@ extension RevoltREST {
     )
   }
 
-  /// Fetch Messages
+  /// Fetches multiple messages from a channel.
   ///
-  /// Fetch multiple messages.
-  ///
-  /// `GET /channels/{target}/messages`
+  /// Fetches multiple messages from the specified channel ID.
   ///
   /// - Parameters:
-  ///   - target: Channel ID
-  ///   - body: The options for fetching action
+  ///   - target: The ID of the channel to fetch messages from.
+  ///   - limit: The maximum number of messages to fetch. (Optional)
+  ///   - before: Fetch messages created before this message. (Optional)
+  ///   - after: Fetch messages created after this message. (Optional)
+  ///   - sort: The sorting direction for the fetched messages. (Optional)
+  ///   - nearby: Fetch messages near the specified message ID. (Optional)
+  ///   - includeUsers: Determines whether to include user information in the response. (Default: `false`)
+  /// - Returns: A `FetchMessagesResponse` enum value representing the result of the API request.
   public func fetchMessages(
     _ target: String,
     limit: Int64? = nil,
