@@ -196,3 +196,26 @@ public enum SpecialRemoteContentType: String, Codable {
   case Bandcamp
   case Streamable
 }
+
+public struct SendableEmbed: Codable {
+  public let iconURL: String?
+
+  public let URL: String?
+
+  public let title: String?
+
+  public let description: String?
+
+  public let media: String?
+
+  public let colour: String?
+
+  private enum CodingKeys: String, CodingKey {
+    case iconURL = "icon_url"
+    case URL = "url"
+    case title
+    case description
+    case media
+    case colour
+  }
+}

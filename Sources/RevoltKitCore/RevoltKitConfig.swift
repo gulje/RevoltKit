@@ -76,7 +76,7 @@ public struct RevoltKitConfig {
     self.default.restBase = self.default.baseURL.appendingPathComponent("api")
 
     RevoltREST.log.trace("Fetching server configuration.")
-  
+
     var req = URLRequest(url: self.default.restBase)
     req.httpMethod = "GET"
 

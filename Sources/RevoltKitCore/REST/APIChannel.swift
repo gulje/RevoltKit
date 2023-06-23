@@ -181,7 +181,6 @@ extension RevoltREST {
     }
   }
 
-  // TODO: Implement messages
   /// Send Message
   ///
   /// Sends a message to the given channel.
@@ -246,24 +245,44 @@ extension RevoltREST {
     )
   }
 
-  // TODO: Implement messages
   /// Delete Message
   ///
   /// Delete a message you've sent or one you have permission to delete.
   ///
   /// `DELETE /channels/{target}/messages/{message_id}`
-  public func deleteMessage() async throws {
-    throw RevoltKitErrors.notImplemented("Not implemented yet")
+  ///
+  /// - Parameters:
+  ///   - target: Channel ID
+  ///   - message: Message ID
+  public func deleteMessage(_ target: String, _ message: String) async throws {
+    try await deleteReq(
+      path: "channels/\(target)/messages/\(message)"
+    )
   }
 
-  // TODO: Implement messages
   /// Edit Message
   ///
   /// Edits a message that you've previously sent.
   ///
   /// `PATCH /channels/{target}/messages/{message_id}`
-  public func editMessage() async throws {
-    throw RevoltKitErrors.notImplemented("Not implemented yet")
+  ///
+  /// - Parameters:
+  ///   - target: Channel ID
+  ///   - message: Message ID
+  ///   - content: New message content
+  ///   - embeds: Embeds to include in the message
+  public func editMessage(
+    _ target: String,
+    _ message: String,
+    content: String? = nil,
+    embeds: [SendableEmbed]
+  ) async throws -> Message {
+    return try await patchReq(
+      path: "channels/\(target)/messages/\(message)",
+      body: EditMessagePayload(
+        content: content, embeds: embeds
+      )
+    )
   }
 
   // TODO: Implement messages
@@ -543,4 +562,10 @@ public struct Reply: Codable {
     self.id = id
     self.mention = mention
   }
+}
+
+public struct EditMessagePayload: Codable {
+  public let content: String?
+
+  public let embeds: [SendableEmbed]?
 }
