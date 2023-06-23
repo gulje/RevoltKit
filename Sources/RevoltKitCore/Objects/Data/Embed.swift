@@ -200,7 +200,7 @@ public enum SpecialRemoteContentType: String, Codable {
 public struct SendableEmbed: Codable {
   public let iconURL: String?
 
-  public let URL: String?
+  public let url: String?
 
   public let title: String?
 
@@ -212,7 +212,7 @@ public struct SendableEmbed: Codable {
 
   private enum CodingKeys: String, CodingKey {
     case iconURL = "icon_url"
-    case URL = "url"
+    case url
     case title
     case description
     case media
