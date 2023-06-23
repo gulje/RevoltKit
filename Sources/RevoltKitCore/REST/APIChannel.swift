@@ -285,7 +285,6 @@ extension RevoltREST {
     )
   }
 
-  // TODO: Implement messages
   /// Bulk Delete Messages
   ///
   /// Delete multiple messages you've sent or one you have permission to delete.
@@ -293,8 +292,16 @@ extension RevoltREST {
   /// Messages must have been sent within the past 1 week.
   ///
   /// `DELETE /channels/{target}/messages/bulk`
-  public func bulkDeleteMessages() async throws {
-    throw RevoltKitErrors.notImplemented("Not implemented yet")
+  ///
+  /// - Parameters:
+  ///   - target: Channel ID
+  ///   - ids: Array of message IDs
+  public func bulkDeleteMessages(
+    _ target: String,
+    _ ids: [String]
+  ) async throws {
+    try await deleteReq(
+      path: "channels/\(target)/messages/bulk", body: BulkDeleteMessagesPayload(ids: ids))
   }
 
   // INTERACTIONS
@@ -568,4 +575,8 @@ public struct EditMessagePayload: Codable {
   public let content: String?
 
   public let embeds: [SendableEmbed]?
+}
+
+public struct BulkDeleteMessagesPayload: Codable {
+  public let ids: [String]
 }

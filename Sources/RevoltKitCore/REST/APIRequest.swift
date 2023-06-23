@@ -210,6 +210,12 @@ extension RevoltREST {
     _ = try await makeRequest(path: path, query: query, method: .delete)
   }
 
+  /// Perform a `DELETE` request to the specified `path` with the given `body`.
+  public func deleteReq<B: Encodable>(path: String, body: B) async throws {
+    let payload = try RevoltREST.encoder.encode(body)
+    _ = try await makeRequest(path: path, body: payload, method: .delete)
+  }
+
   /// Make a `PATCH` request to the Revolt REST API
   public func patchReq<B: Encodable, Response: Decodable>(
     path: String,
