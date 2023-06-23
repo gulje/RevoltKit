@@ -187,8 +187,38 @@ extension RevoltREST {
   /// Sends a message to the given channel.
   ///
   /// `POST /channels/{target}/messages`
-  public func sendMessage() async throws {
-    throw RevoltKitErrors.notImplemented("Not implemented yet")
+  ///
+  /// - Parameters:
+  ///   - target: The target channel to send the message to.
+  ///   - nonce: An optional nonce value for message identification.
+  ///   - content: The content of the message as a string.
+  ///   - attachments: An optional array of attachment URLs to include in the message.
+  ///   - replies: An optional array of reply objects to associate with the message.
+  ///   - embeds: An optional array of embed objects to include in the message.
+  ///   - masquerade: An optional masquerade object to send the message on behalf of another user.
+  ///   - interactions: An optional interactions object to specify interaction options for the message.
+  public func sendMessage(
+    _ target: String,
+    nonce: String? = nil,
+    content: String? = nil,
+    attachments: [String]? = nil,
+    replies: [Reply]? = nil,
+    embeds: [Embed]? = nil,
+    masquerade: Masquerade? = nil,
+    interactions: Interactions? = nil
+  ) async throws -> Message {
+    return try await postReq(
+      path: "channels/\(target)/messages",
+      body: SendMessagePayload(
+        nonce: nonce,
+        content: content,
+        attachments: attachments,
+        replies: replies,
+        embeds: embeds,
+        masquerade: masquerade,
+        interactions: interactions
+      )
+    )
   }
 
   // TODO: Implement messages
@@ -482,4 +512,35 @@ public struct FetchMessagesWithUsers: Codable {
 
   /// List of members
   public let members: [Member]?
+}
+
+public struct SendMessagePayload: Codable {
+  /// Unique token to prevent duplicate message sending (deprecated)
+  public let nonce: String?
+
+  /// Message content to send
+  public let content: String?
+
+  /// Attachments to include in message
+  public let attachments: [String]?
+
+  /// Messages to reply to
+  public let replies: [Reply]?
+
+  public let embeds: [Embed]?
+
+  public let masquerade: Masquerade?
+
+  public let interactions: Interactions?
+}
+
+public struct Reply: Codable {
+  public let id: String
+
+  public let mention: Bool
+
+  public init(id: String, mention: Bool = false) {
+    self.id = id
+    self.mention = mention
+  }
 }
