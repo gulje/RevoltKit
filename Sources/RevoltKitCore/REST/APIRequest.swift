@@ -162,6 +162,24 @@ extension RevoltREST {
     }
   }
 
+  /// Perform a `POST` request to the specified `path` with `attachments` without `body`.
+  public func postReq<D: Decodable>(
+    path: String,
+    attachments: [URL] = []
+  ) async throws -> D {
+    let respData = try await makeRequest(
+      path: path,
+      attachments: attachments,
+      method: .post
+    )
+
+    do {
+      return try RevoltREST.decoder.decode(D.self, from: respData)
+    } catch {
+      throw InternalRestError.jsonDecodingError(error: error)
+    }
+  }
+
   /// Perform a `PUT` request to the specified `path` with a request body of type `B` that conforms to the `Encodable` protocol.
   public func putReq<B: Encodable, Response: Decodable>(
     path: String,

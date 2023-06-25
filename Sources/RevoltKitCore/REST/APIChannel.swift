@@ -77,15 +77,19 @@ extension RevoltREST {
 
   // CHANNEL INVITES
 
-  // TODO: Implement creating invite
   /// Create Invite
   ///
   /// Creates an invite to this channel.
   /// Channel must be a `TextChannel`.
   ///
   /// `POST /channels/{target}/invites`
-  public func createInvite() async throws {
-    throw RevoltKitErrors.notImplemented("Not implemented yet")
+  ///
+  /// - Parameters:
+  ///   - target: Channel or group ID
+  public func createInvite(_ target: String) async throws -> Invite {
+    return try await postReq(
+      path: "channels/\(target)/invites"
+    )
   }
 
   // CHANNEL PERMISSIONS
